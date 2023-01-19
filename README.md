@@ -1,6 +1,6 @@
 # CS152 Project
 ## Our Language
-#### teehee-L <br />teehee.slay<br />teehee-LC
+#### Name: teehee-L <br />Extension: teehee.slay<br />Compiler Name: teehee-LC
 |**Language Feature**|**Our Language**|**Code Example**|
 | :--- | :---: | :---: |
 |**Integer scalar variables**|`int`|`int x`|
