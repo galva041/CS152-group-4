@@ -1,8 +1,8 @@
-#CS152 Project
-##Our Language
-###teehee-L
-###teehee.slay
-###teehee-LC
+# CS152 Project
+## Our Language
+### teehee-L
+### teehee.slay
+### teehee-LC
 |**Language Feature**|**Our Language**|**Code Example**|
 | :--- | :---: | :---: |
 |Integer scalar variables|`int`|`int x`|
@@ -30,9 +30,7 @@
 |Read|`yoink`|`yoink >> x`|
 |Write|`slout`|`slout << x`|
 |Functions (that can take multiple scalar arguments and return a single scalar result)|||
-|Function declaration
-
-Return
+|Function declaration|Return
 |`(return type) name(param) {
     slay
 }`|`int name(int x) {
