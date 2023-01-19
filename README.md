@@ -7,24 +7,24 @@
 |**One-dimensional arrays of integers**| `[]`| `int array[2];` |
 |**Assignment statements**|`isgiving`|`x isgiving y;`|
 |**Arithmetic operators**|
-|+|`+`|`x + y;`|
-|-|`-`|`x - y;`|
-|*|`*`|`x * y;`|
-|/|`/`|`x / y;`|
+|+|`+`|` x isgiving x + y;`|
+|-|`-`|`x isgiving x - y;`|
+|*|`*`|`x isgiving x * y;`|
+|/|`/`|`x isgiving x / y;`|
 |**Relational operators**|
 |<|`less`|`x less y;`|
 |==|`is`|`x is y;`|
 |>|`bigger`|`x bigger y;`|
 |!=|`isnt`|`x isnt y;`|
-|**While or Do-While loops**|`woil()`|`woil(x is y)`|
+|**While or Do-While loops**|`woil(){}`|`woil(x less y){ x is giving x + 1;}`|
 |**If-then-else statements**|
 |if|`yaur?(){}`|`yaur?(x is y){ x isgiving z; }`|
 |else if|`aur?(){}`|`aur?(x is z){x isgiving y; }`|
 |else|`naur{}`|`naur{ z isgiving x; }`|
 |**Comments**|`:sob:`|`:sob: this is doing xyz`|
 |**Read and write statements**|
-|Read|`yoink:`|`yoink: x;`|
-|Write|`slout:`|`slout: x;`|
+|Read|`yoink();`|` int y; y = yoink(x);`|
+|Write|`slout();`|`slout(x);`|
 |**Functions**|`(return type) name(param) {slay}`|`int name(int x) {slay x;}`|
 
 |**Symbol In Language**|**Token Name**|
