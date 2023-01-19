@@ -29,8 +29,7 @@
 |Comments|`:sob:`|`:sob: this is doing xyz`|
 |Read|`yoink`|`yoink >> x`|
 |Write|`slout`|`slout << x`|
-|Functions (that can take multiple scalar arguments and return a single scalar result)|||
-|Function declaration|Return
+|Functions
 |`(return type) name(param) {
     slay
 }`|`int name(int x) {
