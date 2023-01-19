@@ -12,10 +12,10 @@
 |*|`*`|`x isgiving x * y;`|
 |/|`/`|`x isgiving x / y;`|
 |**Relational operators**|
-|<|`less`|`x less y;`|
-|==|`is`|`x is y;`|
-|>|`bigger`|`x bigger y;`|
-|!=|`isnt`|`x isnt y;`|
+|<|`less`|`yaur?(x less y){}`|
+|==|`is`|`yaur?(x is y){}`|
+|>|`bigger`|`yaur?(x bigger y){}`|
+|!=|`isnt`|`yaur?(x isnt y){}`|
 |**While or Do-While loops**|`woil(){}`|`woil(x less y){ x is giving x + 1;}`|
 |**If-then-else statements**|
 |if|`yaur?(){}`|`yaur?(x is y){ x isgiving z; }`|
