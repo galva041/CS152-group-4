@@ -5,7 +5,7 @@ CS152 Project
 |One-dimensional arrays of integers|''|''|
 |Assignment statements|'isgiving'|'x isgiving y'|
 |Arithmetic operators |||
-|+|'+'|'x + y'|
+|+|`+`|'x + y'|
 |-|'-'|'x - y'|
 |*|'*'|'x * y'|
 |/|'/'|'x / y'|
