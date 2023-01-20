@@ -38,9 +38,10 @@
 |bigger|GREATERTHAN|
 |is|ISEQUAL|
 |isnt|ISNOTEQUAL|
-|yaur?|IF|
-|aur?|IFELSE|
-|naur|ELSE|
-|yoink|READ|
-|slout|WRITE|
+|yaur?(){}|IF|
+|aur?(){}|IFELSE|
+|naur{}|ELSE|
+|yoink()|READ|
+|slout()|WRITE|
+|:sob:|COMMENT|
 
