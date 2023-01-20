@@ -25,7 +25,7 @@
 |**Read and write statements**|
 |Read|`yoink();`|` int y; y = yoink(x);`|
 |Write|`slout();`|`slout(x);`|
-|**Functions**|`(return type) name(param) {slay}`|`int name(int x) {slay x;}`|
+|**Functions**|`(return type) name(param,param) {slay}`|`int name(int x,int y) { x isgiving y; slay x;}`|
 
 |**Symbol In Language**|**Token Name**|
 | :--- | :---: |
