@@ -16,7 +16,7 @@
 |==|`is`|`yaur?(x is y){}`|
 |>|`bigger`|`yaur?(x bigger y){}`|
 |!=|`isnt`|`yaur?(x isnt y){}`|
-|**While or Do-While loops**|`woil(){}`|`woil(x less y){ x is giving x + 1;}`|
+|**While or Do-While loops**|`woil(){}`|`woil(x less y){ x isgiving x + 1;}`|
 |**If-then-else statements**|
 |if|`yaur?(){}`|`yaur?(x is y){ x isgiving z; }`|
 |else if|`aur?(){}`|`aur?(x is z){x isgiving y; }`|
