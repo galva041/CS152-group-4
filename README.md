@@ -4,7 +4,7 @@
 |**Language Feature**|**Our Language**|**Code Example**|
 | :--- | :---: | :---: |
 |**Integer scalar variables**|`int`|`int x;`|
-|**One-dimensional arrays of integers**| `[]`| `int array[2];` |
+|**One-dimensional arrays of integers**| `[]`| `int array[2]; int x isgiving array[1];` |
 |**Assignment statements**|`isgiving`|`x isgiving y;`|
 |**Arithmetic operators**|
 |+|`+`|` x isgiving x + y;`|
@@ -38,10 +38,16 @@
 |bigger|GREATERTHAN|
 |is|ISEQUAL|
 |isnt|ISNOTEQUAL|
-|yaur?(){}|IF|
-|aur?(){}|IFELSE|
-|naur{}|ELSE|
-|yoink()|READ|
-|slout()|WRITE|
-|:sob:|COMMENT|
-
+|yaur?|IF|
+|aur?|IFELSE|
+|naur|ELSE|
+|yoink|READ|
+|slout|WRITE|
+|;|SEMICOLON|
+|(|LEFTPARENTHESIS|
+|)|RIGHTPARENTHESIS|
+|{|LEFTCURLY|
+|}|RIGHTCURLY|
+|[|LEFTBRACKET|
+|]|RIGHTBRACKET|
+|.|DECIMAL|
