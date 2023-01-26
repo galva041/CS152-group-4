@@ -24,7 +24,9 @@ DIGIT [0-9]
 
 %%
 
-main()
+main(int argc, *char, argv[])
 {
+  yyin = fopen(argv[1], "r");
   yylex();
+  fclose(yyin);
 }
