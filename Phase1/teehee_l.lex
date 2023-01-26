@@ -24,6 +24,8 @@ ALPHA [a-zA-Z]
 "}"   {printf("R_CURLY\n");}
 "["   {printf("L_BRACKET\n");}
 "]"   {printf("R_BRACKET\n");}
+","   {printf("COMMA\n");}
+"."   {printf("DECIMAL\n");}
 " "   {}
 "\t"  {}
 "\n"  {}
@@ -36,6 +38,8 @@ aur\?  {printf("ELSE IF\n");}
 naur  {printf("ELSE\n");}
 woil  {printf("WHILELOOP\n");}
 int   {printf("INTEGER ");}
+queen  {printf("FUNCTION ");}
+slay  {printf("RETURN\n");}
 
 {ALPHA}+ {printf("%s\n", yytext);}
 .   {printf("ERROR: invalid character -> %s\n", yytext); exit(0);}
