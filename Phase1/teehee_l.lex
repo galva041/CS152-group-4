@@ -3,8 +3,10 @@
 %}
 
 DIGIT [0-9]
+ALPHA [a-zA-Z]
 
 %%
+{DIGIT}+ {printf("NUMBER %s\n", yytext);}
 
 "+"      {printf("PLUS\n");} 
 "-"      {printf("MINUS\n");} 
@@ -22,15 +24,21 @@ DIGIT [0-9]
 "}"   {printf("R_CURLY\n");}
 "["   {printf("L_BRACKET\n");}
 "]"   {printf("R_BRACKET\n");}
+" "   {}
+"\t"  {}
+"\n"  {}
 
 :sob: {printf("COMMENT\n");}
 yoink {printf("READ\n");}
 slout {printf("WRITE\n");}
-yaur? {printf("IF\n");}
-aur?  {printf("ELSE IF\n");}
+yaur\? {printf("IF\n");}
+aur\?  {printf("ELSE IF\n");}
 naur  {printf("ELSE\n");}
 woil  {printf("WHILELOOP\n");}
-int   {printf("INTEGER");}
+int   {printf("INTEGER ");}
+
+{ALPHA}+ {printf("%s\n", yytext);}
+.   {printf("ERROR: invalid character -> %s\n", yytext); exit(0);}
 %%
 
 main(int argc, char* argv[]) {
