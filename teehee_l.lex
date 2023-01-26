@@ -5,6 +5,7 @@
 DIGIT [0-9]
 
 %%
+
 "+"      {printf("PLUS\n");} 
 "-"      {printf("MINUS\n");} 
 "*"      {printf("MULT\n");} 
@@ -25,6 +26,9 @@ DIGIT [0-9]
 "}"   {printf("R_CURLY\n");}
 "["   {printf("L_BRACKET\n");}
 "]"   {printf("R_BRACKET\n");}
+":sob:" {printf("COMMENT\n");}
+"yoink" {printf("READ\n");}
+"slout" {printf("WRITE\n");}
 
 %%
 
