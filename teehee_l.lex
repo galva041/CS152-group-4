@@ -22,8 +22,6 @@ DIGIT [0-9]
 "["   {printf("L_BRACKET\n");}
 "]"   {printf("R_BRACKET\n");}
 
-
-
 %%
 
 main()
