@@ -15,10 +15,6 @@ DIGIT [0-9]
 "bigger"     {printf("GREATERTHAN\n");}
 "is"    {printf("ISEQUAL\n");}
 "isnt"    {printf("ISNOTEQUAL\n");}
-"yaur?"    {printf("IF\n");}
-"aur?"    {printf("ELSE IF\n");}
-"naur"    {printf("ELSE\n");}
-"woil"    {printf("WHILELOOP\n");}
 ";"   {printf("SEMICOLON\n");}
 "("   {printf("L_PAREN\n");}
 ")"   {printf("R_PAREN\n");}
@@ -26,10 +22,14 @@ DIGIT [0-9]
 "}"   {printf("R_CURLY\n");}
 "["   {printf("L_BRACKET\n");}
 "]"   {printf("R_BRACKET\n");}
+
 :sob: {printf("COMMENT\n");}
 yoink {printf("READ\n");}
 slout {printf("WRITE\n");}
-
+yaur? {printf("IF\n");}
+aur?  {printf("ELSE IF\n");}
+naur  {printf("ELSE\n");}
+woil  {printf("WHILELOOP\n");}
 %%
 
 main(int argc, *char, argv[])
