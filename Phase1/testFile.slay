@@ -1,0 +1,25 @@
+int x;
+x isgiving 2;
+yaur?(x less 3) {
+    x isgivng 0;
+}
+aur?(x bigger 3){
+    x isgiving 0;
+}
+naur{
+    x isgiving 2;
+}
+woil(x less 5){
+    x = x + 1;
+}
+yaur?(x is 5){
+    slout(x);
+}
+int y;
+y isgiving yoink(x);
+yaur?(x isnt 8){
+    slout(x);
+}
+x isgivng (4*6)/2;
+
+int arr[2];
