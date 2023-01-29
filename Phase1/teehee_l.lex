@@ -1,5 +1,7 @@
 %{
     #include <stdio.h>
+
+    int lineCount = 1;
 %}
 
 DIGIT [0-9]
@@ -28,9 +30,9 @@ ALPHA [a-zA-Z]
 "."   {printf("DECIMAL\n");}
 " "   {}
 "\t"  {}
-"\n"  {}
+"\n"  {++lineCount;}
 
-:sob: {printf("COMMENT\n");}
+:sob: {printf("COMMENT ");}
 yoink {printf("READ\n");}
 slout {printf("WRITE\n");}
 yaur\? {printf("IF\n");}
@@ -42,7 +44,7 @@ queen  {printf("FUNCTION ");}
 slay  {printf("RETURN\n");}
 
 {ALPHA}+ {printf("%s\n", yytext);}
-.   {printf("ERROR: invalid character -> %s\n", yytext); exit(0);}
+.   {printf("ERROR: invalid character -> %s, line %d\n", yytext, lineCount); exit(0);}
 %%
 
 main(int argc, char* argv[]) {
