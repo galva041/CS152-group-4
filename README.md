@@ -21,10 +21,11 @@
 |if|`yaur?(){}`|`yaur?(x is y){ x isgiving z; }`|
 |else if|`aur?(){}`|`aur?(x is z){x isgiving y; }`|
 |else|`naur{}`|`naur{ z isgiving x; }`|
-|**Comments**|`:sob:`|`:sob: this is doing xyz`|
+|**Comments**|`:sob:.*\n`|`:sob: this is doing xyz`|
 |**Read and write statements**|
 |Read|`yoink();`|` int y; y = yoink(x);`|
 |Write|`slout();`|`slout(x);`|
+|Identifier|`[a-zA-Z][a-zA-Z0-9]*`|`int val1`|
 |**Functions**|`queen(param,param) {slay}`|`queen name(int x,int y) { x isgiving y; slay x;}`|
 
 |**Symbol In Language**|**Token Name**|
