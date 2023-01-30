@@ -1,4 +1,6 @@
 int x;
+int ident2;
+:sob: int 3ident;
 x isgiving 2;
 yaur?(x less 3) {
     x isgiving 0;
