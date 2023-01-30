@@ -25,7 +25,7 @@
 |**Read and write statements**|
 |Read|`yoink();`|` int y; y = yoink(x);`|
 |Write|`slout();`|`slout(x);`|
-|Identifier|`[a-zA-Z][a-zA-Z0-9]*`|`int val1`|
+|Identifier|`[a-zA-Z][a-zA-Z0-9]*`|`int val1;`|
 |**Functions**|`queen(param,param) {slay}`|`queen name(int x,int y) { x isgiving y; slay x;}`|
 
 |**Symbol In Language**|**Token Name**|
