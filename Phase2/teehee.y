@@ -69,6 +69,7 @@ mulop: term {printf("mulop -> term");}
 term: var {printf("term -> var\n");}
     | INTEGER {printf("term -> INTEGER\n");}
     | L_PAREN expression R_PAREN {printf("term -> L_PAREN expression R_PAREN\n");}
+    | INTEGER DECIMAL INTEGER {printf("term -> INTEGER DECIMAL INTEGER\n");}
     | IDENTIFIER L_PAREN expression expression_loop R_PAREN {printf("term -> IDENTIFIER L_PAREN expression expression_loop R_PAREN \n");}
     ;
 
