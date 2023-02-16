@@ -16,7 +16,7 @@ functions: function {printf("functions -> function\n");}
     | function functions {printf("functions -> function functions\n");}
     ;
 
-function: INT IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CURLY {printf("function -> INT IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CURLY\n");}
+function: INTEGER IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CURLY {printf("function -> INTEGER IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CURLY\n");}
         ;
 
 arguments: argument {printf("arguments -> argument\n");}
@@ -24,7 +24,7 @@ arguments: argument {printf("arguments -> argument\n");}
     ;
 
 argument: %empty /* epsilon */ {printf("argument -> epsilon\n");}
-    | INT IDENTIFIER {printf("argument -> INT IDENTIFIER\n");}
+    | INTEGER IDENTIFIER {printf("argument -> INTEGER IDENTIFIER\n");}
     ;
 
 statements: declaration {printf("statements -> declaration\n");}
@@ -35,7 +35,7 @@ statement: declaration {printf("statement -> declaration\n");}
     | function_call {printf("statement -> function_call\n");}
     ;
 
-declaration: INT IDENTIFIER {printf("declaration -> INT IDENTIFIER\n"));}
+declaration: INTEGER IDENTIFIER {printf("declaration -> INTEGER IDENTIFIER\n"));}
     ;
 
 function_call: IDENTIFIER L_PAREN args R_PAREN {printf("function_call -> IDENTIFIER L_PAREN args R_PAREN\n");}
