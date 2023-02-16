@@ -42,7 +42,7 @@ naur  {return ELSE; posCount += yyleng;}
 woil  {return WHILELOOP; posCount += yyleng;}
 int   {return INTEGER; posCount += yyleng;}
 queen  {return FUNCTION; posCount += yyleng;}
-slay  {return RETURN}; posCount += yyleng;}
+slay  {return RETURN; posCount += yyleng;}
 
 [a-zA-Z][a-zA-Z0-9]* {return IDENTIFIER;posCount += yyleng;}
 [0-9][a-zA-Z0-9]* {printf("Invalid IDENTIFIER -> %s, line %d, position %d\n", yytext, lineCount, posCount); exit(0);}
