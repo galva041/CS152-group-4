@@ -1,5 +1,5 @@
 %{
-    #include <stdio.h>
+    #include "y.tab.h"
 
     int lineCount = 1;
     int posCount = 1;
@@ -15,11 +15,14 @@ ALPHA [a-zA-Z]
 "-"      {return MINUS; posCount += yyleng;} 
 "*"      {return MULT; posCount += yyleng;} 
 "/"      {return DIV; posCount += yyleng;} 
+"naurt"  {return NOT; posCount += yyleng;} 
 "isgiving"     {return EQUALS; posCount += yyleng;}
 "less"     {return LESSTHAN; posCount += yyleng;}
 "bigger"     {return GREATERTHAN; posCount += yyleng;}
 "is"    {return ISEQUAL; posCount += yyleng;}
 "isnt"    {return ISNOTEQUAL; posCount += yyleng;}
+"isgivingsmall" {return LTEQUAL; posCount += yyleng;}
+"isgivingbigger" {return GTEQUAL; posCount += yyleng;}  
 ";"   {return SEMICOLON; posCount += yyleng;}
 "("   {return L_PAREN; posCount += yyleng;}
 ")"   {return R_PAREN; posCount += yyleng;}
@@ -42,7 +45,7 @@ naur  {return ELSE; posCount += yyleng;}
 woil  {return WHILELOOP; posCount += yyleng;}
 int   {return INTEGER; posCount += yyleng;}
 queen  {return FUNCTION; posCount += yyleng;}
-slay  {return RETURN}; posCount += yyleng;}
+slay  {return RETURN; posCount += yyleng;}
 
 [a-zA-Z][a-zA-Z0-9]* {return IDENTIFIER;posCount += yyleng;}
 [0-9][a-zA-Z0-9]* {printf("Invalid IDENTIFIER -> %s, line %d, position %d\n", yytext, lineCount, posCount); exit(0);}
