@@ -1,0 +1,15 @@
+:sob: This is a nested expression_loop
+
+queen main() {
+    int i;
+    int j;
+    i isgiving 0;
+    woil(i less 2) {
+        j isgiving 1;
+        woil(j isgivingsmall 3) {
+            slout(j);
+            j isgiving j + 1;
+        }
+        i isgiving i + 1;
+    }
+}
