@@ -3,6 +3,7 @@
     extern FILE* yyin;
 %}
 
+%define parse.error verbose
 %start prog_start
 %token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER NUMBER FUNCTION RETURN IDENTIFIER
 
@@ -24,10 +25,10 @@ arguments: argument {printf("arguments -> argument\n");}
     ;
 
 argument: %empty /* epsilon */ {printf("argument -> epsilon\n");}
-    | IDENTIFIER {printf("argument -> IDENTIFIER\n");}
+    | INTEGER IDENTIFIER {printf("argument -> INTEGER IDENTIFIER\n");}
     ;
 
-statements: declaration {printf("statements -> declaration\n");}
+statements: declaration SEMICOLON {printf("statements -> declaration\n");}
     | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
     ;
 
@@ -36,15 +37,15 @@ statement: s_var {printf("statement -> s_var\n");}
     | s_while {printf("statement -> s_while\n");}
     | READ L_PAREN var R_PAREN {printf("statement -> read\n");}
     | WRITE L_PAREN var R_PAREN {printf("statement -> write\n");}
-    | RETURN expression {printf("statement -> RETURN\n");}
+    | RETURN expression  {printf("statement -> RETURN expression \n");}
     ;
 
-s_var: var EQUALS expression {printf("statement -> var EQUALS expression");}
+s_var: var EQUALS expression SEMICOLON{printf("statement -> var EQUALS expression SEMICOLON\n");}
     ;
 
-s_if: IF bool_exp L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY\n");}
-    | IF bool_exp L_CURLY statement R_CURLY IFELSE bool_exp L_CURLY statement R_CURLY {printf("IF bool_exp L_CURLY statement R_CURLY IFELSE bool_exp L_CURLY statement R_CURLY\n");}
-    | IF bool_exp L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY\n");}
+s_if: IF L_PAREN bool_exp R_PAREN L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY\n");}
+    | IF L_PAREN bool_exp R_PAREN L_CURLY statement R_CURLY IFELSE bool_exp L_CURLY statement R_CURLY {printf("IF bool_exp L_CURLY statement R_CURLY IFELSE bool_exp L_CURLY statement R_CURLY\n");}
+    | IF L_PAREN bool_exp R_PAREN L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY\n");}
     ;
 
 s_while: WHILELOOP bool_exp L_CURLY statement R_CURLY {printf("WHILELOOP bool_exp L_CURLY statement R_CURLY");}
@@ -67,9 +68,9 @@ mulop: term {printf("mulop -> term");}
     ;
 
 term: var {printf("term -> var\n");}
-    | INTEGER {printf("term -> INTEGER\n");}
-    | L_PAREN expression R_PAREN {printf("term -> L_PAREN expression R_PAREN\n");}
-    | INTEGER DECIMAL INTEGER {printf("term -> INTEGER DECIMAL INTEGER\n");}
+    | NUMBER {printf("term -> NUMBER \n");}
+    | L_PAREN expression R_PAREN {printf("term -> L_PAREN expression R_PAREN \n");}
+    | NUMBER DECIMAL NUMBER {printf("term -> NUMBER DECIMAL NUMBER \n");}
     | IDENTIFIER L_PAREN expression expression_loop R_PAREN {printf("term -> IDENTIFIER L_PAREN expression expression_loop R_PAREN \n");}
     ;
 
@@ -99,11 +100,10 @@ comp:
     ;
 
 declaration: INTEGER IDENTIFIER {printf("declaration -> INTEGER IDENTIFIER\n");}
-    | INTEGER IDENTIFIER L_BRACKET arr_dec R_BRACKET {printf("array -> L_BRACKET arr_dec R_BRACKET\n");}
+    | INTEGER IDENTIFIER L_BRACKET arr_dec R_BRACKET SEMICOLON{printf("array -> L_BRACKET arr_dec R_BRACKET SEMICOLON\n");}
     ;
 
-arr_dec: NUMBER {printf("arr_dec -> INTEGER\n");}
-    | expression {printf("arr_dec -> expression");}
+arr_dec: expression {printf("arr_dec -> expression");}
     ;
 
 // function_call: IDENTIFIER L_PAREN args R_PAREN {printf("function_call -> IDENTIFIER L_PAREN args R_PAREN\n");}
@@ -125,4 +125,6 @@ void main(int argc, char** argv) {
     }
     yyparse();
 }
-int yyerror(){}
+int yyerror(char * string){
+    printf("%s\n", string);
+}

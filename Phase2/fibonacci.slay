@@ -1,0 +1,10 @@
+
+
+queen main(){
+	int n;
+	int fibn;
+
+	yoink(n);
+	fibn isgiving fibonacci(n);
+	slout(fibn);
+}

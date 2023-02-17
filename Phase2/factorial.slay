@@ -1,0 +1,14 @@
+queen factorial(int k) {
+    yaur? (k isgivingsmall 1) {
+        slay 1;
+    }
+    slay k * factorial(k-1);
+}
+
+queen main() {
+    int n;
+    int fac;
+    yoink(n);
+    fac isgiving factorial(n);
+    slout(fac);
+}
