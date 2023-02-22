@@ -30,18 +30,21 @@ argument: %empty /* epsilon */ {printf("argument -> epsilon\n");}
 
 statements: %empty {printf("statements -> epsilon\n");}
     | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
-    | s_if {printf("statement -> s_if\n");}
-    | s_while {printf("statement -> s_while\n");}
+    | statement_p statements {printf("statements -> statement_p statements\n");}
+    ;
+
+statement_p : s_if {printf("statement_p -> s_if\n");}
+    | s_while {printf("statement_p -> s_while\n");}
     ;
 
 statement: declaration {printf("statement -> declaration\n");}
     | s_var {printf("statment -> s_var\n");}
-    | READ L_PAREN var R_PAREN {printf("statement -> READ L_PAREN var R_PAREN");}
+    | READ L_PAREN var R_PAREN {printf("statement -> READ L_PAREN var R_PAREN\n");}
     | WRITE L_PAREN expression R_PAREN {printf("statement -> WRITE L_PAREN var R_PAREN\n");}
     | RETURN expression {printf("statement -> RETURN expression\n");}
     ;
 
-s_var: var EQUALS expression {printf("statement -> var EQUALS expression\n");}
+s_var: var EQUALS expression {printf("s_var -> var EQUALS expression\n");}
     ;
 
 s_if: IF L_PAREN bool_exp R_PAREN L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY\n");}
@@ -49,7 +52,7 @@ s_if: IF L_PAREN bool_exp R_PAREN L_CURLY statement R_CURLY {printf("s_if -> IF 
     | IF L_PAREN bool_exp R_PAREN L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY\n");}
     ;
 
-s_while: WHILELOOP L_PAREN bool_exp expression_loop R_PAREN L_CURLY statements R_CURLY {printf("s_while -> WHILELOOP L_PAREN bool_exp expression_loop R_PAREN L_CURLY statement R_CURLY\n");}
+s_while: WHILELOOP L_PAREN bool_exp expression_loop R_PAREN L_CURLY statements R_CURLY {printf("s_while -> WHILELOOP L_PAREN bool_exp expression_loop R_PAREN L_CURLY statements R_CURLY\n");}
     ;
 
 expression: expression addop term {printf("expression -> expression addop term\n");}
@@ -103,7 +106,7 @@ var: IDENTIFIER {printf("var -> IDENTIFIER\n");}
     ;
 
 bool_exp: 
-        NOT {printf("bool_exp->NOT\n");}
+        NOT {printf("bool_exp -> NOT\n");}
         | %empty /* epsilon */ {printf("bool_exp -> epsilon\n");}
 		;
 
