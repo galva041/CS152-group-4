@@ -47,12 +47,12 @@ statement: declaration {printf("statement -> declaration\n");}
 s_var: var EQUALS expression {printf("s_var -> var EQUALS expression\n");}
     ;
 
-s_if: IF L_PAREN bool_exp R_PAREN L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY\n");}
-    | IF L_PAREN bool_exp R_PAREN L_CURLY statement R_CURLY IFELSE bool_exp L_CURLY statement R_CURLY {printf("IF bool_exp L_CURLY statement R_CURLY IFELSE bool_exp L_CURLY statement R_CURLY\n");}
-    | IF L_PAREN bool_exp R_PAREN L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY\n");}
+s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {printf("s_if -> IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY\n");}
+    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY {printf("IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY\n");}
+    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY {printf("s_if -> IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY\n");}
     ;
 
-s_while: WHILELOOP L_PAREN bool_exp expression_loop R_PAREN L_CURLY statements R_CURLY {printf("s_while -> WHILELOOP L_PAREN bool_exp expression_loop R_PAREN L_CURLY statements R_CURLY\n");}
+s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {printf("s_while -> WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY\n");}
     ;
 
 expression: expression addop term {printf("expression -> expression addop term\n");}
@@ -72,23 +72,27 @@ mulop: MULT {printf("mulop -> MULT\n");}
     | MOD {printf("mulop -> MOD\n");}
     ;
 
-factor: L_PAREN expression R_PAREN {printf("factor -> L_PAREN expression R_PAREN\n");}
+factor: func L_PAREN expression R_PAREN {printf("factor -> func L_PAREN expression R_PAREN\n");}
     | NUMBER {printf("factor -> NUMBER\n");}
     | var {printf("factor -> var\n");}
     | NUMBER DECIMAL NUMBER {printf("factor -> NUMBER DECIMAL NUMBER\n");}
     ;
 
-expression_loop: expression_loop ne_comp term_loop {printf("expression_loop -> expression_loop ne_op term_loop\n");}
-    | term_loop {printf("expression_loop -> term_loop\n");}
+func: %empty {printf("func -> epsiolon\n");}
+    | IDENTIFIER {printf("func -> IDENTIFIER\n");}
     ;
 
-ne_comp: ISNOTEQUAL {printf("ne_loop -> ISNOTEQUAL\n");}
-    | LESSTHAN {printf("ne_loop -> LESSTHAN\n");}
-    | GREATERTHAN {printf("ne_loop -> GREATERTHAN\n");}
+expression_bool: expression_bool ne_comp term_bool{printf("expression_bool -> expression_bool ne_op term_bool\n");}
+    | term_bool {printf("expression_bool -> term_bool\n");}
     ;
 
-term_loop: term_loop e_comp factor_loop {printf("term_loop -> term_loop e_comp factor_loop\n");}
-    | factor {printf("term_loop -> factor_loop\n");}
+ne_comp: ISNOTEQUAL {printf("ne_bool -> ISNOTEQUAL\n");}
+    | LESSTHAN {printf("ne_bool -> LESSTHAN\n");}
+    | GREATERTHAN {printf("ne_bool -> GREATERTHAN\n");}
+    ;
+
+term_bool: term_bool e_comp factor_bool {printf("term_bool -> term_bool e_comp factor_bool\n");}
+    | factor {printf("term_bool -> factor_bool\n");}
     ;
 
 e_comp: ISEQUAL {printf("e_comp -> ISEQUAL\n");}
@@ -96,18 +100,18 @@ e_comp: ISEQUAL {printf("e_comp -> ISEQUAL\n");}
     | GTEQUAL {printf("e_comp -> GTEQUAL\n");}
     ;
 
-factor_loop: L_PAREN expression R_PAREN {printf("factor_loop -> L_PAREN expression R_PAREN\n");}
-    | NUMBER {printf("factor_loop -> NUMBER\n");}
-    | var {printf("factor_loop -> var\n");}
+factor_bool: L_PAREN expression R_PAREN {printf("factor_bool -> L_PAREN expression R_PAREN\n");}
+    | NUMBER {printf("factor_bool -> NUMBER\n");}
+    | var {printf("factor_bool -> var\n");}
     ;
 
 var: IDENTIFIER {printf("var -> IDENTIFIER\n");}
     | IDENTIFIER L_BRACKET NUMBER R_BRACKET {printf("var -> IDENTIFIER L_BRACKET NUMBER R_BRACKET\n");}
     ;
 
-bool_exp: 
-        NOT {printf("bool_exp -> NOT\n");}
-        | %empty /* epsilon */ {printf("bool_exp -> epsilon\n");}
+neg: 
+        NOT {printf("neg -> NOT\n");}
+        | %empty /* epsilon */ {printf("neg -> epsilon\n");}
 		;
 
 declaration: INTEGER IDENTIFIER {printf("declaration -> INTEGER IDENTIFIER\n");}
