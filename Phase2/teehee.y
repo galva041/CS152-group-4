@@ -3,6 +3,7 @@
     extern FILE* yyin;
 %}
 
+%define parse.error verbose
 %start prog_start
 %token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER NUMBER FUNCTION RETURN IDENTIFIER
 
@@ -16,7 +17,7 @@ functions: function {printf("functions -> function\n");}
     | function functions {printf("functions -> function functions\n");}
     ;
 
-function: FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CURLY {printf("function -> INT IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CURLY\n");}
+function: FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CURLY {printf("function -> FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CURLY\n");}
     ;
 
 arguments: argument {printf("arguments -> argument\n");}
@@ -24,87 +25,101 @@ arguments: argument {printf("arguments -> argument\n");}
     ;
 
 argument: %empty /* epsilon */ {printf("argument -> epsilon\n");}
-    | IDENTIFIER {printf("argument -> IDENTIFIER\n");}
+    | INTEGER IDENTIFIER {printf("argument -> INTEGER IDENTIFIER\n");}
     ;
 
-statements: declaration {printf("statements -> declaration\n");}
+statements: %empty {printf("statements -> epsilon\n");}
     | statement SEMICOLON statements {printf("statements -> statement SEMICOLON statements\n");}
+    | statement_p statements {printf("statements -> statement_p statements\n");}
     ;
 
-statement: s_var {printf("statement -> s_var\n");}
-    | s_if {printf("statement -> s_if\n");}
-    | s_while {printf("statement -> s_while\n");}
-    | READ L_PAREN var R_PAREN {printf("statement -> read\n");}
-    | WRITE L_PAREN var R_PAREN {printf("statement -> write\n");}
-    | RETURN expression {printf("statement -> RETURN\n");}
+statement_p : s_if {printf("statement_p -> s_if\n");}
+    | s_while {printf("statement_p -> s_while\n");}
     ;
 
-s_var: var EQUALS expression {printf("statement -> var EQUALS expression");}
+statement: declaration {printf("statement -> declaration\n");}
+    | s_var {printf("statment -> s_var\n");}
+    | READ L_PAREN var R_PAREN {printf("statement -> READ L_PAREN var R_PAREN\n");}
+    | WRITE L_PAREN expression R_PAREN {printf("statement -> WRITE L_PAREN var R_PAREN\n");}
+    | RETURN expression {printf("statement -> RETURN expression\n");}
     ;
 
-s_if: IF bool_exp L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY\n");}
-    | IF bool_exp L_CURLY statement R_CURLY IFELSE bool_exp L_CURLY statement R_CURLY {printf("IF bool_exp L_CURLY statement R_CURLY IFELSE bool_exp L_CURLY statement R_CURLY\n");}
-    | IF bool_exp L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY {printf("s_if -> IF bool_exp L_CURLY statement R_CURLY ELSE L_CURLY statement R_CURLY\n");}
+s_var: var EQUALS expression {printf("s_var -> var EQUALS expression\n");}
     ;
 
-s_while: WHILELOOP bool_exp L_CURLY statement R_CURLY {printf("WHILELOOP bool_exp L_CURLY statement R_CURLY");}
+s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {printf("s_if -> IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY\n");}
+    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY {printf("IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY\n");}
+    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY {printf("s_if -> IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY\n");}
     ;
 
-// read: READ L_PAREN var R_PAREN {printf("read -> READ L_PAREN var R_PAREN ");}
-//     ;
-// write: WRITE L_PAREN var R_PAREN {printf("write -> WRITE L_PAREN var R_PAREN ");}
-//     ;
-
-expression: mulop {printf("expression -> mulop\n");}
-    | mulop PLUS mulop {printf("expression -> mulop ADD mulop\n");}
-    | mulop MINUS mulop {printf("expression -> mulop MINUS mulop\n");}
+s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {printf("s_while -> WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY\n");}
     ;
 
-mulop: term {printf("mulop -> term");}
-    | term MULT term {printf("mulop -> term MULT term\n");}
-    | term DIV term {printf("mulop -> term DIV term\n");}
-    | term MOD term {printf("mulop -> term MOD term\n");}
+expression: expression addop term {printf("expression -> expression addop term\n");}
+    | term {printf("expression -> term\n");}
     ;
 
-term: var {printf("term -> var\n");}
-    | INTEGER {printf("term -> INTEGER\n");}
-    | L_PAREN expression R_PAREN {printf("term -> L_PAREN expression R_PAREN\n");}
-    | IDENTIFIER L_PAREN expression expression_loop R_PAREN {printf("term -> IDENTIFIER L_PAREN expression expression_loop R_PAREN \n");}
-    | INTEGER DECIMAL INTEGER {printf("term -> INTEGER DECIMAL INTEGER\n");}
+addop: PLUS {printf("addop -> PLUS\n");}
+    | MINUS {printf("term -> MINUS\n");}
     ;
 
-expression_loop: %empty /*epsilon*/ {printf("expression_loop -> epsilon\n");}
-    | COMMA expression expression_loop {printf("expression_loop -> COMMA expression expression_loop\n");}
+term: term mulop factor {printf("term -> term MULOP factor\n");}
+    | factor {printf("term -> factor\n");}
+    ;
+
+mulop: MULT {printf("mulop -> MULT\n");}
+    | DIV {printf("mulop -> DIV\n");}
+    | MOD {printf("mulop -> MOD\n");}
+    ;
+
+factor: func L_PAREN expression R_PAREN {printf("factor -> func L_PAREN expression R_PAREN\n");}
+    | NUMBER {printf("factor -> NUMBER\n");}
+    | var {printf("factor -> var\n");}
+    | NUMBER DECIMAL NUMBER {printf("factor -> NUMBER DECIMAL NUMBER\n");}
+    ;
+
+func: %empty {printf("func -> epsiolon\n");}
+    | IDENTIFIER {printf("func -> IDENTIFIER\n");}
+    ;
+
+expression_bool: expression_bool ne_comp term_bool{printf("expression_bool -> expression_bool ne_op term_bool\n");}
+    | term_bool {printf("expression_bool -> term_bool\n");}
+    ;
+
+ne_comp: ISNOTEQUAL {printf("ne_bool -> ISNOTEQUAL\n");}
+    | LESSTHAN {printf("ne_bool -> LESSTHAN\n");}
+    | GREATERTHAN {printf("ne_bool -> GREATERTHAN\n");}
+    ;
+
+term_bool: term_bool e_comp factor_bool {printf("term_bool -> term_bool e_comp factor_bool\n");}
+    | factor {printf("term_bool -> factor_bool\n");}
+    ;
+
+e_comp: ISEQUAL {printf("e_comp -> ISEQUAL\n");}
+    | LTEQUAL {printf("e_comp -> LTEQUAL\n");}
+    | GTEQUAL {printf("e_comp -> GTEQUAL\n");}
+    ;
+
+factor_bool: L_PAREN expression R_PAREN {printf("factor_bool -> L_PAREN expression R_PAREN\n");}
+    | NUMBER {printf("factor_bool -> NUMBER\n");}
+    | var {printf("factor_bool -> var\n");}
     ;
 
 var: IDENTIFIER {printf("var -> IDENTIFIER\n");}
-    | IDENTIFIER L_BRACKET expression R_BRACKET {printf("var -> IDENTIFIER L_BRACKET expression R_BRACKET \n");}
+    | IDENTIFIER L_BRACKET NUMBER R_BRACKET {printf("var -> IDENTIFIER L_BRACKET NUMBER R_BRACKET\n");}
     ;
 
-bool_exp: 
-        bool_exp_p expression comp expression {printf("bool_exp->expression comp expression\n");}
+neg: 
+        NOT {printf("neg -> NOT\n");}
+        | %empty /* epsilon */ {printf("neg -> epsilon\n");}
 		;
-bool_exp_p: 
-        NOT {printf("bool_exp_p->NOT\n");}
-        | %empty /* epsilon */ {printf("bool_exp_p -> epsilon\n");}
-		;
-
-comp: 
-    ISEQUAL {printf("comparison->EQUAL\n");}
-    | ISNOTEQUAL {printf("comparison->NOT EQUAL\n");}
-    | LESSTHAN {printf("comparison->LESS THAN\n");}
-    | GREATERTHAN {printf("comparison->GREATER THAN\n");}
-    | LTEQUAL {printf("comparison->LESS THAN OR EQUAL\n");}
-    | GTEQUAL {printf("comparison->GREATER THAN OR EQUAL\n");}
-    ;
 
 declaration: INTEGER IDENTIFIER {printf("declaration -> INTEGER IDENTIFIER\n");}
-    | INTEGER IDENTIFIER L_BRACKET arr_dec R_BRACKET {printf("array -> L_BRACKET arr_dec R_BRACKET\n");}
+    | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET SEMICOLON{printf("array -> L_BRACKET arr_dec R_BRACKET SEMICOLON\n");}
     ;
 
-arr_dec: NUMBER {printf("arr_dec -> INTEGER\n");}
-    | expression {printf("arr_dec -> expression");}
-    ;
+// arr_dec: expression {printf("arr_dec -> expression");}
+//    ;
 
 // function_call: IDENTIFIER L_PAREN args R_PAREN {printf("function_call -> IDENTIFIER L_PAREN args R_PAREN\n");}
 //     ;
@@ -125,4 +140,6 @@ void main(int argc, char** argv) {
     }
     yyparse();
 }
-int yyerror(){}
+int yyerror(char * string){
+    printf("%s\n", string);
+}

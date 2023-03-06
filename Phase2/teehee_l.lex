@@ -15,11 +15,14 @@ ALPHA [a-zA-Z]
 "-"      {posCount += yyleng; return MINUS;}
 "*"      {posCount += yyleng; return MULT;}
 "/"      {posCount += yyleng; return DIV;}
+"%"      {posCount += yyleng; return MOD;}
 "isgiving"     {posCount += yyleng; return EQUALS;}
 "less"     {posCount += yyleng; return LESSTHAN;}
 "bigger"     {posCount += yyleng; return GREATERTHAN;}
 "is"    {posCount += yyleng; return ISEQUAL;}
 "isnt"    {posCount += yyleng; return ISNOTEQUAL;}
+"isgivingsmall" {posCount += yyleng; return LTEQUAL;}
+"isgivingbigger" {posCount += yyleng; return GTEQUAL;}
 ";"   {posCount += yyleng; return SEMICOLON;}
 "("   {posCount += yyleng; return L_PAREN;}
 ")"   {posCount += yyleng; return R_PAREN;}
@@ -32,6 +35,7 @@ ALPHA [a-zA-Z]
 " "   {}
 "\t"  {}
 "\n"  {++lineCount; posCount = 1;}
+"naurt" {posCount += yyleng; return NOT;}
 
 :sob:.*\n {++lineCount; posCount = 1;}
 yoink {posCount += yyleng; return READ;}
