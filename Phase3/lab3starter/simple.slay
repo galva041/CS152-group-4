@@ -1,0 +1,28 @@
+queen main() {
+  int a;
+  int b;
+  int c;
+
+  a isgiving 100;
+  b isgiving 50;
+ 
+  :sob: Addition, answer is 150, since 150 isgiving 100+50
+  c isgiving a + b;
+  slout(c);
+
+  :sob: Subtraction, answer is 50, since 50 isgiving 100-50
+  c isgiving a - b;
+  slout(c);
+
+  :sob: Multiplication, answer is 5000, since 5000 isgiving 100 * 50
+  c isgiving a * b;
+  slout(c);
+
+  :sob: Division, answer is 2, since 2 isgiving 100/50
+  c isgiving a / b;
+  slout(c);
+
+  :sob: Modulus, answer is 0, since 0 isgiving 100 % 50
+  c isgiving a % b;
+  slout(c);
+}
