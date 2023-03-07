@@ -1,37 +1,28 @@
-function main;
-beginparams
-endparams
-beginlocals
+queen main() {
+  int a;
+  int b;
+  int c;
 
-  a : integer;
-  b : integer;
-  c : integer;
-
-endlocals
-
-beginbody
-  a := 100;
-  b := 50;
+  a isgiving 100;
+  b isgiving 50;
  
-  ## Addition, answer is 150, since 150 := 100+50
-  c := a + b;
-  write c;
+  :sob: Addition, answer is 150, since 150 isgiving 100+50
+  c isgiving a + b;
+  slout(c);
 
-  ## Subtraction, answer is 50, since 50 := 100-50
-  c := a - b;
-  write c;
+  :sob: Subtraction, answer is 50, since 50 isgiving 100-50
+  c isgiving a - b;
+  slout(c);
 
-  ## Multiplication, answer is 5000, since 5000 := 100 * 50
-  c := a * b;
-  write c;
+  :sob: Multiplication, answer is 5000, since 5000 isgiving 100 * 50
+  c isgiving a * b;
+  slout(c);
 
-  ## Division, answer is 2, since 2 := 100/50
-  c := a / b;
-  write c;
+  :sob: Division, answer is 2, since 2 isgiving 100/50
+  c isgiving a / b;
+  slout(c);
 
-  ## Modulus, answer is 0, since 0 := 100 % 50
-  c := a % b;
-  write c;
-
-endbody
-
+  :sob: Modulus, answer is 0, since 0 isgiving 100 % 50
+  c isgiving a % b;
+  slout(c);
+}
