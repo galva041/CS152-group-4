@@ -1,0 +1,480 @@
+Terminals unused in grammar
+
+   COMMA
+
+
+Grammar
+
+    0 $accept: prog_start $end
+
+    1 prog_start: functions
+
+    2 functions: %empty
+    3          | function functions
+
+    4 $@1: %empty
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+    6 declarations: %empty
+    7             | declaration SEMICOLON declarations
+
+    8 declaration: IDENT COLON INTEGER
+
+    9 statements: statement SEMICOLON
+   10           | statement SEMICOLON statements
+
+   11 statement: IDENT ASSIGN symbol ADD symbol
+   12          | IDENT ASSIGN symbol SUB symbol
+   13          | IDENT ASSIGN symbol MULT symbol
+   14          | IDENT ASSIGN symbol DIV symbol
+   15          | IDENT ASSIGN symbol MOD symbol
+   16          | IDENT ASSIGN symbol
+   17          | WRITE IDENT
+
+   18 symbol: IDENT
+   19       | NUMBER
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+BEGIN_PARAMS (258) 5
+END_PARAMS (259) 5
+BEGIN_LOCALS (260) 5
+END_LOCALS (261) 5
+BEGIN_BODY (262) 5
+END_BODY (263) 5
+FUNCTION (264) 5
+INTEGER (265) 8
+WRITE (266) 17
+SUB (267) 12
+ADD (268) 11
+MULT (269) 13
+DIV (270) 14
+MOD (271) 15
+SEMICOLON (272) 5 7 9 10
+COLON (273) 8
+COMMA (274)
+ASSIGN (275) 11 12 13 14 15 16
+NUMBER (276) 19
+IDENT (277) 5 8 11 12 13 14 15 16 17 18
+
+
+Nonterminals, with rules where they appear
+
+$accept (23)
+    on left: 0
+prog_start (24)
+    on left: 1, on right: 0
+functions (25)
+    on left: 2 3, on right: 1 3
+function (26)
+    on left: 5, on right: 3
+$@1 (27)
+    on left: 4, on right: 5
+declarations (28)
+    on left: 6 7, on right: 5 7
+declaration (29)
+    on left: 8, on right: 7
+statements (30)
+    on left: 9 10, on right: 5 10
+statement (31)
+    on left: 11 12 13 14 15 16 17, on right: 9 10
+symbol (32)
+    on left: 18 19, on right: 11 12 13 14 15 16
+
+
+State 0
+
+    0 $accept: . prog_start $end
+
+    FUNCTION  shift, and go to state 1
+
+    $default  reduce using rule 2 (functions)
+
+    prog_start  go to state 2
+    functions   go to state 3
+    function    go to state 4
+
+
+State 1
+
+    5 function: FUNCTION . IDENT $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+    IDENT  shift, and go to state 5
+
+
+State 2
+
+    0 $accept: prog_start . $end
+
+    $end  shift, and go to state 6
+
+
+State 3
+
+    1 prog_start: functions .
+
+    $default  reduce using rule 1 (prog_start)
+
+
+State 4
+
+    3 functions: function . functions
+
+    FUNCTION  shift, and go to state 1
+
+    $default  reduce using rule 2 (functions)
+
+    functions  go to state 7
+    function   go to state 4
+
+
+State 5
+
+    5 function: FUNCTION IDENT . $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+    $default  reduce using rule 4 ($@1)
+
+    $@1  go to state 8
+
+
+State 6
+
+    0 $accept: prog_start $end .
+
+    $default  accept
+
+
+State 7
+
+    3 functions: function functions .
+
+    $default  reduce using rule 3 (functions)
+
+
+State 8
+
+    5 function: FUNCTION IDENT $@1 . SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+    SEMICOLON  shift, and go to state 9
+
+
+State 9
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON . BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+    BEGIN_PARAMS  shift, and go to state 10
+
+
+State 10
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS . declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+    IDENT  shift, and go to state 11
+
+    $default  reduce using rule 6 (declarations)
+
+    declarations  go to state 12
+    declaration   go to state 13
+
+
+State 11
+
+    8 declaration: IDENT . COLON INTEGER
+
+    COLON  shift, and go to state 14
+
+
+State 12
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS declarations . END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+    END_PARAMS  shift, and go to state 15
+
+
+State 13
+
+    7 declarations: declaration . SEMICOLON declarations
+
+    SEMICOLON  shift, and go to state 16
+
+
+State 14
+
+    8 declaration: IDENT COLON . INTEGER
+
+    INTEGER  shift, and go to state 17
+
+
+State 15
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS . BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+    BEGIN_LOCALS  shift, and go to state 18
+
+
+State 16
+
+    7 declarations: declaration SEMICOLON . declarations
+
+    IDENT  shift, and go to state 11
+
+    $default  reduce using rule 6 (declarations)
+
+    declarations  go to state 19
+    declaration   go to state 13
+
+
+State 17
+
+    8 declaration: IDENT COLON INTEGER .
+
+    $default  reduce using rule 8 (declaration)
+
+
+State 18
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS . declarations END_LOCALS BEGIN_BODY statements END_BODY
+
+    IDENT  shift, and go to state 11
+
+    $default  reduce using rule 6 (declarations)
+
+    declarations  go to state 20
+    declaration   go to state 13
+
+
+State 19
+
+    7 declarations: declaration SEMICOLON declarations .
+
+    $default  reduce using rule 7 (declarations)
+
+
+State 20
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations . END_LOCALS BEGIN_BODY statements END_BODY
+
+    END_LOCALS  shift, and go to state 21
+
+
+State 21
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS . BEGIN_BODY statements END_BODY
+
+    BEGIN_BODY  shift, and go to state 22
+
+
+State 22
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY . statements END_BODY
+
+    WRITE  shift, and go to state 23
+    IDENT  shift, and go to state 24
+
+    statements  go to state 25
+    statement   go to state 26
+
+
+State 23
+
+   17 statement: WRITE . IDENT
+
+    IDENT  shift, and go to state 27
+
+
+State 24
+
+   11 statement: IDENT . ASSIGN symbol ADD symbol
+   12          | IDENT . ASSIGN symbol SUB symbol
+   13          | IDENT . ASSIGN symbol MULT symbol
+   14          | IDENT . ASSIGN symbol DIV symbol
+   15          | IDENT . ASSIGN symbol MOD symbol
+   16          | IDENT . ASSIGN symbol
+
+    ASSIGN  shift, and go to state 28
+
+
+State 25
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements . END_BODY
+
+    END_BODY  shift, and go to state 29
+
+
+State 26
+
+    9 statements: statement . SEMICOLON
+   10           | statement . SEMICOLON statements
+
+    SEMICOLON  shift, and go to state 30
+
+
+State 27
+
+   17 statement: WRITE IDENT .
+
+    $default  reduce using rule 17 (statement)
+
+
+State 28
+
+   11 statement: IDENT ASSIGN . symbol ADD symbol
+   12          | IDENT ASSIGN . symbol SUB symbol
+   13          | IDENT ASSIGN . symbol MULT symbol
+   14          | IDENT ASSIGN . symbol DIV symbol
+   15          | IDENT ASSIGN . symbol MOD symbol
+   16          | IDENT ASSIGN . symbol
+
+    NUMBER  shift, and go to state 31
+    IDENT   shift, and go to state 32
+
+    symbol  go to state 33
+
+
+State 29
+
+    5 function: FUNCTION IDENT $@1 SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY .
+
+    $default  reduce using rule 5 (function)
+
+
+State 30
+
+    9 statements: statement SEMICOLON .
+   10           | statement SEMICOLON . statements
+
+    WRITE  shift, and go to state 23
+    IDENT  shift, and go to state 24
+
+    $default  reduce using rule 9 (statements)
+
+    statements  go to state 34
+    statement   go to state 26
+
+
+State 31
+
+   19 symbol: NUMBER .
+
+    $default  reduce using rule 19 (symbol)
+
+
+State 32
+
+   18 symbol: IDENT .
+
+    $default  reduce using rule 18 (symbol)
+
+
+State 33
+
+   11 statement: IDENT ASSIGN symbol . ADD symbol
+   12          | IDENT ASSIGN symbol . SUB symbol
+   13          | IDENT ASSIGN symbol . MULT symbol
+   14          | IDENT ASSIGN symbol . DIV symbol
+   15          | IDENT ASSIGN symbol . MOD symbol
+   16          | IDENT ASSIGN symbol .
+
+    SUB   shift, and go to state 35
+    ADD   shift, and go to state 36
+    MULT  shift, and go to state 37
+    DIV   shift, and go to state 38
+    MOD   shift, and go to state 39
+
+    $default  reduce using rule 16 (statement)
+
+
+State 34
+
+   10 statements: statement SEMICOLON statements .
+
+    $default  reduce using rule 10 (statements)
+
+
+State 35
+
+   12 statement: IDENT ASSIGN symbol SUB . symbol
+
+    NUMBER  shift, and go to state 31
+    IDENT   shift, and go to state 32
+
+    symbol  go to state 40
+
+
+State 36
+
+   11 statement: IDENT ASSIGN symbol ADD . symbol
+
+    NUMBER  shift, and go to state 31
+    IDENT   shift, and go to state 32
+
+    symbol  go to state 41
+
+
+State 37
+
+   13 statement: IDENT ASSIGN symbol MULT . symbol
+
+    NUMBER  shift, and go to state 31
+    IDENT   shift, and go to state 32
+
+    symbol  go to state 42
+
+
+State 38
+
+   14 statement: IDENT ASSIGN symbol DIV . symbol
+
+    NUMBER  shift, and go to state 31
+    IDENT   shift, and go to state 32
+
+    symbol  go to state 43
+
+
+State 39
+
+   15 statement: IDENT ASSIGN symbol MOD . symbol
+
+    NUMBER  shift, and go to state 31
+    IDENT   shift, and go to state 32
+
+    symbol  go to state 44
+
+
+State 40
+
+   12 statement: IDENT ASSIGN symbol SUB symbol .
+
+    $default  reduce using rule 12 (statement)
+
+
+State 41
+
+   11 statement: IDENT ASSIGN symbol ADD symbol .
+
+    $default  reduce using rule 11 (statement)
+
+
+State 42
+
+   13 statement: IDENT ASSIGN symbol MULT symbol .
+
+    $default  reduce using rule 13 (statement)
+
+
+State 43
+
+   14 statement: IDENT ASSIGN symbol DIV symbol .
+
+    $default  reduce using rule 14 (statement)
+
+
+State 44
+
+   15 statement: IDENT ASSIGN symbol MOD symbol .
+
+    $default  reduce using rule 15 (statement)
