@@ -92,12 +92,18 @@ prog_start: %empty /* epsilon */ {}
     }
     ;
 
-functions: function {}
+functions: 
+    function {
+        CodeNode *node = new CodeNode;
+        CodeNode *code_node1 = $1;
+        node->code += code_node1->code;
+        $$ = node; 
+    }
     | function functions {
         CodeNode *code_node1 = $1;
         CodeNode *code_node2 = $2;
         CodeNode *node = new CodeNode;
-        node->code = code_node1->code + code_node2->code;
+        node->code += code_node1->code + code_node2->code;
         $$ = node; 
     }
     ;
@@ -107,7 +113,7 @@ function: FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CUR
     CodeNode *node = new CodeNode;
     std::string func_name = $2;
     node->code = "";
-    node->code += std::string("func ") + func_name;
+    node->code += std::string("func ") + func_name + std::string("\n");
 
     // params arguments
     CodeNode *arguments = $4;
@@ -116,6 +122,7 @@ function: FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CUR
     // statements
     CodeNode *statements = $7;
     node->code += statements->code;
+    $$ = node;
 }
     ;
 
@@ -123,21 +130,56 @@ arguments: argument {}
     | argument COMMA arguments {}
     ;
 
-argument: %empty /* epsilon */ {}
-    | INTEGER IDENTIFIER {}
+argument: %empty /* epsilon */ {
+        CodeNode *node = new CodeNode;
+        $$ = node; 
+    }
+    | INTEGER IDENTIFIER {
+        CodeNode *code_node1 = new CodeNode;
+        std::string id = $2;
+        code_node1->code += std::string(". ") + id + std::string("\n");
+        $$ = code_node1;
+    }
     ;
 
-statements: %empty {}
-    | statement SEMICOLON statements {}
-    | statement_p statements {}
+statements: %empty {
+        CodeNode *node = new CodeNode;
+        $$ = node; 
+    }
+    | statement SEMICOLON statements {
+        CodeNode *code_node1 = $1;
+        CodeNode *code_node2 = $3;
+        CodeNode *node = new CodeNode;
+        
+        node->code += code_node1->code + code_node2->code;
+        $$ = node;
+    }
+    | statement_p statements {
+        // CodeNode *code_node1 = $1;
+        // CodeNode *code_node2 = $2;
+        // CodeNode *node = new CodeNode;
+        // node->code += code_node1->code + code_node2->code;
+        // $$ = node;
+    }
     ;
 
 statement_p : s_if {}
     | s_while {}
     ;
 
-statement: declaration {}
-    | s_var {}
+statement: 
+    declaration {
+        CodeNode *node = new CodeNode;
+        node->code += $1->code;
+        $$ = node;
+    }
+    | s_var {
+        CodeNode *node = new CodeNode;
+        CodeNode *code_node1 = $1;
+
+        node->code += code_node1->code;
+        $$ = node;
+    }
     | READ L_PAREN var R_PAREN {}
     | WRITE L_PAREN expression R_PAREN {}
     | RETURN expression {}
@@ -145,12 +187,9 @@ statement: declaration {}
 
 s_var: var EQUALS expression {
     CodeNode *node = new CodeNode;
-    node->code = $1->code;
-
-    node->code = "";
-
     node->code = $3->code;
-    node->code = std::string("= ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+
+    node->code += std::string("= ") + $1->name + std::string(", ") + $3->name + std::string("\n");
     $$ = node;
 }
     ;
@@ -163,16 +202,44 @@ s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {}
 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {}
     ;
 
-expression: expression addop term {}
-    | term {}
+expression: expression addop term {
+    CodeNode *node = new CodeNode;
+    CodeNode *expression = $1;
+    CodeNode *addop = $2;
+    CodeNode *term = $3;
+    
+    node->code += expression->code + addop->code + term->code;
+    $$ = node;
+}
+    | term {
+        CodeNode *node = new CodeNode;
+        CodeNode *term = $1;
+        
+        node->code += term->code;
+        $$ = node;
+    }
     ;
 
 addop: PLUS {}
     | MINUS {}
     ;
 
-term: term mulop factor {}
-    | factor {}
+term: term mulop factor {
+    CodeNode *node = new CodeNode;
+    CodeNode *term = $1;
+    CodeNode *mulop = $2;
+    CodeNode *factor = $3;
+    
+    node->code += term->code + mulop->code + factor->code;
+    $$ = node;
+}
+    | factor {
+        CodeNode *node = new CodeNode;
+        CodeNode *factor = $1;
+        
+        node->code += factor->code;
+        $$ = node;
+    }
     ;
 
 mulop: MULT {}
@@ -180,14 +247,40 @@ mulop: MULT {}
     | MOD {}
     ;
 
-factor: func L_PAREN expression R_PAREN {}
-    | NUMBER {}
-    | var {}
-    | NUMBER DECIMAL NUMBER {}
+factor: func L_PAREN expression R_PAREN {
+    CodeNode *node = new CodeNode;
+    node->code += $1->code + $3->code;
+    $$ = node;
+}
+    | NUMBER {
+        CodeNode *node = new CodeNode;
+        node->code = "";
+        node->name = $1;
+        $$ = node;
+    }
+    | var {
+        CodeNode *node = new CodeNode;
+        node->code = $1->code;
+        $$ = node;
+    }
+    | NUMBER DECIMAL NUMBER {
+        CodeNode *node = new CodeNode;
+        node->code = "";
+        node->name = $1;
+        $$ = node;
+    }
     ;
 
-func: %empty {}
-    | IDENTIFIER {}
+func: %empty {
+    CodeNode *node = new CodeNode;
+    $$ = node;
+}
+    | IDENTIFIER {
+        CodeNode *node = new CodeNode;
+        node->code = "";
+        node->name = $1;
+        $$ = node;
+    }
     ;
 
 expression_bool: expression_bool ne_comp term_bool{}
@@ -209,7 +302,12 @@ e_comp: ISEQUAL {}
     ;
 
 factor_bool: L_PAREN expression R_PAREN {}
-    | NUMBER {}
+    | NUMBER {
+        CodeNode *node = new CodeNode;
+        node->code = "";
+        node->name = $1;
+        $$ = node;
+    }
     | var {}
     ;
 
@@ -219,7 +317,13 @@ var: IDENTIFIER {
     node->name = $1;
     $$ = node;
 }
-    | IDENTIFIER L_BRACKET NUMBER R_BRACKET {}
+    | IDENTIFIER L_BRACKET NUMBER R_BRACKET {
+        std::string name = $1;
+        CodeNode *node = new CodeNode;
+        node->code = "";
+        node->name = name;
+        $$ = node;
+    }
     ;
 
 neg: 
@@ -227,9 +331,34 @@ neg:
         | %empty /* epsilon */ {}
 		;
 
-declaration: INTEGER IDENTIFIER {}
-    | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET SEMICOLON
-    {}
+declaration: INTEGER IDENTIFIER  {
+        CodeNode *node = new CodeNode;
+        std::string id = $2;
+        node->code += std::string(". ") + id + std::string("\n");
+        $$ = node;
+    }
+     | INTEGER IDENTIFIER EQUALS expression  {
+         CodeNode *code_node1 = new CodeNode;
+         std::string id = $2;
+         CodeNode *expression = $4;
+         code_node1->code += expression->code;
+         code_node1->code += std::string(". hello") + id + expression->name + std::string("\n");
+         $$ = code_node1; 
+     }
+    | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET 
+    {
+        // CodeNode *node = new CodeNode;
+        // // identifier name
+        // CodeNode *code_node1 = new CodeNode;
+        // std::string id = $2;
+        // code_node1->code += std::string(". ") + id + std::string("\n");
+
+        // // expressions 
+        // CodeNode *expression = $4;
+        // code_node1->code += expression->code;
+
+        // $$ = node;
+    }
     ;
 
 %%
@@ -237,7 +366,7 @@ declaration: INTEGER IDENTIFIER {}
 int main(int argc, char **argv)
 {
     yyparse();
-   print_symbol_table();
+//    print_symbol_table();
    return 0;
 }
 

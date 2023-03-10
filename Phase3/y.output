@@ -83,7 +83,8 @@ Grammar
    56    | %empty
 
    57 declaration: INTEGER IDENTIFIER
-   58            | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET SEMICOLON
+   58            | INTEGER IDENTIFIER EQUALS expression
+   59            | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET
 
 
 Terminals, with rules where they appear
@@ -95,7 +96,7 @@ MINUS (259) 28
 MULT (260) 31
 MOD (261) 33
 DIV (262) 32
-EQUALS (263) 20
+EQUALS (263) 20 58
 LESSTHAN (264) 43
 GREATERTHAN (265) 44
 ISEQUAL (266) 47
@@ -103,13 +104,13 @@ ISNOTEQUAL (267) 42
 GTEQUAL (268) 49
 LTEQUAL (269) 48
 NOT (270) 55
-SEMICOLON (271) 11 58
+SEMICOLON (271) 11
 L_PAREN (272) 5 17 18 21 22 23 24 34 50
 R_PAREN (273) 5 17 18 21 22 23 24 34 50
 L_CURLY (274) 5 21 22 23 24
 R_CURLY (275) 5 21 22 23 24
-L_BRACKET (276) 54 58
-R_BRACKET (277) 54 58
+L_BRACKET (276) 54 59
+R_BRACKET (277) 54 59
 COMMA (278) 7
 DECIMAL (279) 37
 READ (280) 17
@@ -118,10 +119,10 @@ IF (282) 21 22 23
 IFELSE (283) 22
 ELSE (284) 23
 WHILELOOP (285) 24
-INTEGER (286) 9 57 58
+INTEGER (286) 9 57 58 59
 FUNCTION (287) 5
 RETURN (288) 19
-IDENTIFIER (289) 5 9 39 53 54 57 58
+IDENTIFIER (289) 5 9 39 53 54 57 58 59
 NUMBER (290) 35 37 51 54
 
 
@@ -152,7 +153,7 @@ s_if (46)
 s_while (47)
     on left: 24, on right: 14
 expression (48)
-    on left: 25 26, on right: 18 19 20 25 34 50 58
+    on left: 25 26, on right: 18 19 20 25 34 50 58 59
 addop (49)
     on left: 27 28, on right: 25
 term (50)
@@ -178,7 +179,7 @@ var (59)
 neg (60)
     on left: 55 56, on right: 21 22 23 24
 declaration (61)
-    on left: 57 58, on right: 15
+    on left: 57 58 59, on right: 15
 
 
 State 0
@@ -375,7 +376,8 @@ State 20
 State 21
 
    57 declaration: INTEGER . IDENTIFIER
-   58            | INTEGER . IDENTIFIER L_BRACKET expression R_BRACKET SEMICOLON
+   58            | INTEGER . IDENTIFIER EQUALS expression
+   59            | INTEGER . IDENTIFIER L_BRACKET expression R_BRACKET
 
     IDENTIFIER  shift, and go to state 36
 
@@ -531,9 +533,11 @@ State 35
 State 36
 
    57 declaration: INTEGER IDENTIFIER .
-   58            | INTEGER IDENTIFIER . L_BRACKET expression R_BRACKET SEMICOLON
+   58            | INTEGER IDENTIFIER . EQUALS expression
+   59            | INTEGER IDENTIFIER . L_BRACKET expression R_BRACKET
 
-    L_BRACKET  shift, and go to state 54
+    EQUALS     shift, and go to state 54
+    L_BRACKET  shift, and go to state 55
 
     $default  reduce using rule 57 (declaration)
 
@@ -555,7 +559,7 @@ State 38
    35 factor: NUMBER .
    37       | NUMBER . DECIMAL NUMBER
 
-    DECIMAL  shift, and go to state 55
+    DECIMAL  shift, and go to state 56
 
     $default  reduce using rule 35 (factor)
 
@@ -565,12 +569,12 @@ State 39
    19 statement: RETURN expression .
    25 expression: expression . addop term
 
-    PLUS   shift, and go to state 56
-    MINUS  shift, and go to state 57
+    PLUS   shift, and go to state 57
+    MINUS  shift, and go to state 58
 
     $default  reduce using rule 19 (statement)
 
-    addop  go to state 58
+    addop  go to state 59
 
 
 State 40
@@ -578,13 +582,13 @@ State 40
    26 expression: term .
    29 term: term . mulop factor
 
-    MULT  shift, and go to state 59
-    MOD   shift, and go to state 60
-    DIV   shift, and go to state 61
+    MULT  shift, and go to state 60
+    MOD   shift, and go to state 61
+    DIV   shift, and go to state 62
 
     $default  reduce using rule 26 (expression)
 
-    mulop  go to state 62
+    mulop  go to state 63
 
 
 State 41
@@ -598,7 +602,7 @@ State 42
 
    34 factor: func . L_PAREN expression R_PAREN
 
-    L_PAREN  shift, and go to state 63
+    L_PAREN  shift, and go to state 64
 
 
 State 43
@@ -612,7 +616,7 @@ State 44
 
    54 var: IDENTIFIER L_BRACKET . NUMBER R_BRACKET
 
-    NUMBER  shift, and go to state 64
+    NUMBER  shift, and go to state 65
 
 
 State 45
@@ -643,7 +647,7 @@ State 47
 
     $default  reduce using rule 10 (statements)
 
-    statements   go to state 65
+    statements   go to state 66
     statement_p  go to state 25
     statement    go to state 26
     s_var        go to state 27
@@ -662,7 +666,7 @@ State 48
 
     $default  reduce using rule 38 (func)
 
-    expression  go to state 66
+    expression  go to state 67
     term        go to state 40
     factor      go to state 41
     func        go to state 42
@@ -673,7 +677,7 @@ State 49
 
    17 statement: READ L_PAREN var . R_PAREN
 
-    R_PAREN  shift, and go to state 67
+    R_PAREN  shift, and go to state 68
 
 
 State 50
@@ -681,11 +685,11 @@ State 50
    18 statement: WRITE L_PAREN expression . R_PAREN
    25 expression: expression . addop term
 
-    PLUS     shift, and go to state 56
-    MINUS    shift, and go to state 57
-    R_PAREN  shift, and go to state 68
+    PLUS     shift, and go to state 57
+    MINUS    shift, and go to state 58
+    R_PAREN  shift, and go to state 69
 
-    addop  go to state 58
+    addop  go to state 59
 
 
 State 51
@@ -701,40 +705,40 @@ State 52
    22     | IF L_PAREN neg . expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY
    23     | IF L_PAREN neg . expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY
 
-    L_PAREN     shift, and go to state 69
+    L_PAREN     shift, and go to state 70
     IDENTIFIER  shift, and go to state 23
-    NUMBER      shift, and go to state 70
+    NUMBER      shift, and go to state 71
 
-    expression_bool  go to state 71
-    term_bool        go to state 72
-    factor_bool      go to state 73
-    var              go to state 74
+    expression_bool  go to state 72
+    term_bool        go to state 73
+    factor_bool      go to state 74
+    var              go to state 75
 
 
 State 53
 
    24 s_while: WHILELOOP L_PAREN neg . expression_bool R_PAREN L_CURLY statements R_CURLY
 
-    L_PAREN     shift, and go to state 69
+    L_PAREN     shift, and go to state 70
     IDENTIFIER  shift, and go to state 23
-    NUMBER      shift, and go to state 70
+    NUMBER      shift, and go to state 71
 
-    expression_bool  go to state 75
-    term_bool        go to state 72
-    factor_bool      go to state 73
-    var              go to state 74
+    expression_bool  go to state 76
+    term_bool        go to state 73
+    factor_bool      go to state 74
+    var              go to state 75
 
 
 State 54
 
-   58 declaration: INTEGER IDENTIFIER L_BRACKET . expression R_BRACKET SEMICOLON
+   58 declaration: INTEGER IDENTIFIER EQUALS . expression
 
     IDENTIFIER  shift, and go to state 37
     NUMBER      shift, and go to state 38
 
     $default  reduce using rule 38 (func)
 
-    expression  go to state 76
+    expression  go to state 77
     term        go to state 40
     factor      go to state 41
     func        go to state 42
@@ -743,26 +747,42 @@ State 54
 
 State 55
 
-   37 factor: NUMBER DECIMAL . NUMBER
+   59 declaration: INTEGER IDENTIFIER L_BRACKET . expression R_BRACKET
 
-    NUMBER  shift, and go to state 77
+    IDENTIFIER  shift, and go to state 37
+    NUMBER      shift, and go to state 38
+
+    $default  reduce using rule 38 (func)
+
+    expression  go to state 78
+    term        go to state 40
+    factor      go to state 41
+    func        go to state 42
+    var         go to state 43
 
 
 State 56
+
+   37 factor: NUMBER DECIMAL . NUMBER
+
+    NUMBER  shift, and go to state 79
+
+
+State 57
 
    27 addop: PLUS .
 
     $default  reduce using rule 27 (addop)
 
 
-State 57
+State 58
 
    28 addop: MINUS .
 
     $default  reduce using rule 28 (addop)
 
 
-State 58
+State 59
 
    25 expression: expression addop . term
 
@@ -771,34 +791,34 @@ State 58
 
     $default  reduce using rule 38 (func)
 
-    term    go to state 78
+    term    go to state 80
     factor  go to state 41
     func    go to state 42
     var     go to state 43
 
 
-State 59
+State 60
 
    31 mulop: MULT .
 
     $default  reduce using rule 31 (mulop)
 
 
-State 60
+State 61
 
    33 mulop: MOD .
 
     $default  reduce using rule 33 (mulop)
 
 
-State 61
+State 62
 
    32 mulop: DIV .
 
     $default  reduce using rule 32 (mulop)
 
 
-State 62
+State 63
 
    29 term: term mulop . factor
 
@@ -807,71 +827,14 @@ State 62
 
     $default  reduce using rule 38 (func)
 
-    factor  go to state 79
+    factor  go to state 81
     func    go to state 42
     var     go to state 43
 
 
-State 63
-
-   34 factor: func L_PAREN . expression R_PAREN
-
-    IDENTIFIER  shift, and go to state 37
-    NUMBER      shift, and go to state 38
-
-    $default  reduce using rule 38 (func)
-
-    expression  go to state 80
-    term        go to state 40
-    factor      go to state 41
-    func        go to state 42
-    var         go to state 43
-
-
 State 64
 
-   54 var: IDENTIFIER L_BRACKET NUMBER . R_BRACKET
-
-    R_BRACKET  shift, and go to state 81
-
-
-State 65
-
-   11 statements: statement SEMICOLON statements .
-
-    $default  reduce using rule 11 (statements)
-
-
-State 66
-
-   20 s_var: var EQUALS expression .
-   25 expression: expression . addop term
-
-    PLUS   shift, and go to state 56
-    MINUS  shift, and go to state 57
-
-    $default  reduce using rule 20 (s_var)
-
-    addop  go to state 58
-
-
-State 67
-
-   17 statement: READ L_PAREN var R_PAREN .
-
-    $default  reduce using rule 17 (statement)
-
-
-State 68
-
-   18 statement: WRITE L_PAREN expression R_PAREN .
-
-    $default  reduce using rule 18 (statement)
-
-
-State 69
-
-   50 factor_bool: L_PAREN . expression R_PAREN
+   34 factor: func L_PAREN . expression R_PAREN
 
     IDENTIFIER  shift, and go to state 37
     NUMBER      shift, and go to state 38
@@ -885,294 +848,319 @@ State 69
     var         go to state 43
 
 
+State 65
+
+   54 var: IDENTIFIER L_BRACKET NUMBER . R_BRACKET
+
+    R_BRACKET  shift, and go to state 83
+
+
+State 66
+
+   11 statements: statement SEMICOLON statements .
+
+    $default  reduce using rule 11 (statements)
+
+
+State 67
+
+   20 s_var: var EQUALS expression .
+   25 expression: expression . addop term
+
+    PLUS   shift, and go to state 57
+    MINUS  shift, and go to state 58
+
+    $default  reduce using rule 20 (s_var)
+
+    addop  go to state 59
+
+
+State 68
+
+   17 statement: READ L_PAREN var R_PAREN .
+
+    $default  reduce using rule 17 (statement)
+
+
+State 69
+
+   18 statement: WRITE L_PAREN expression R_PAREN .
+
+    $default  reduce using rule 18 (statement)
+
+
 State 70
+
+   50 factor_bool: L_PAREN . expression R_PAREN
+
+    IDENTIFIER  shift, and go to state 37
+    NUMBER      shift, and go to state 38
+
+    $default  reduce using rule 38 (func)
+
+    expression  go to state 84
+    term        go to state 40
+    factor      go to state 41
+    func        go to state 42
+    var         go to state 43
+
+
+State 71
 
    51 factor_bool: NUMBER .
 
     $default  reduce using rule 51 (factor_bool)
 
 
-State 71
+State 72
 
    21 s_if: IF L_PAREN neg expression_bool . R_PAREN L_CURLY statements R_CURLY
    22     | IF L_PAREN neg expression_bool . R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY
    23     | IF L_PAREN neg expression_bool . R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY
    40 expression_bool: expression_bool . ne_comp term_bool
 
-    LESSTHAN     shift, and go to state 83
-    GREATERTHAN  shift, and go to state 84
-    ISNOTEQUAL   shift, and go to state 85
-    R_PAREN      shift, and go to state 86
+    LESSTHAN     shift, and go to state 85
+    GREATERTHAN  shift, and go to state 86
+    ISNOTEQUAL   shift, and go to state 87
+    R_PAREN      shift, and go to state 88
 
-    ne_comp  go to state 87
+    ne_comp  go to state 89
 
 
-State 72
+State 73
 
    41 expression_bool: term_bool .
    45 term_bool: term_bool . e_comp factor_bool
 
-    ISEQUAL  shift, and go to state 88
-    GTEQUAL  shift, and go to state 89
-    LTEQUAL  shift, and go to state 90
+    ISEQUAL  shift, and go to state 90
+    GTEQUAL  shift, and go to state 91
+    LTEQUAL  shift, and go to state 92
 
     $default  reduce using rule 41 (expression_bool)
 
-    e_comp  go to state 91
+    e_comp  go to state 93
 
 
-State 73
+State 74
 
    46 term_bool: factor_bool .
 
     $default  reduce using rule 46 (term_bool)
 
 
-State 74
+State 75
 
    52 factor_bool: var .
 
     $default  reduce using rule 52 (factor_bool)
 
 
-State 75
+State 76
 
    24 s_while: WHILELOOP L_PAREN neg expression_bool . R_PAREN L_CURLY statements R_CURLY
    40 expression_bool: expression_bool . ne_comp term_bool
 
-    LESSTHAN     shift, and go to state 83
-    GREATERTHAN  shift, and go to state 84
-    ISNOTEQUAL   shift, and go to state 85
-    R_PAREN      shift, and go to state 92
+    LESSTHAN     shift, and go to state 85
+    GREATERTHAN  shift, and go to state 86
+    ISNOTEQUAL   shift, and go to state 87
+    R_PAREN      shift, and go to state 94
 
-    ne_comp  go to state 87
-
-
-State 76
-
-   25 expression: expression . addop term
-   58 declaration: INTEGER IDENTIFIER L_BRACKET expression . R_BRACKET SEMICOLON
-
-    PLUS       shift, and go to state 56
-    MINUS      shift, and go to state 57
-    R_BRACKET  shift, and go to state 93
-
-    addop  go to state 58
+    ne_comp  go to state 89
 
 
 State 77
+
+   25 expression: expression . addop term
+   58 declaration: INTEGER IDENTIFIER EQUALS expression .
+
+    PLUS   shift, and go to state 57
+    MINUS  shift, and go to state 58
+
+    $default  reduce using rule 58 (declaration)
+
+    addop  go to state 59
+
+
+State 78
+
+   25 expression: expression . addop term
+   59 declaration: INTEGER IDENTIFIER L_BRACKET expression . R_BRACKET
+
+    PLUS       shift, and go to state 57
+    MINUS      shift, and go to state 58
+    R_BRACKET  shift, and go to state 95
+
+    addop  go to state 59
+
+
+State 79
 
    37 factor: NUMBER DECIMAL NUMBER .
 
     $default  reduce using rule 37 (factor)
 
 
-State 78
+State 80
 
    25 expression: expression addop term .
    29 term: term . mulop factor
 
-    MULT  shift, and go to state 59
-    MOD   shift, and go to state 60
-    DIV   shift, and go to state 61
+    MULT  shift, and go to state 60
+    MOD   shift, and go to state 61
+    DIV   shift, and go to state 62
 
     $default  reduce using rule 25 (expression)
 
-    mulop  go to state 62
+    mulop  go to state 63
 
 
-State 79
+State 81
 
    29 term: term mulop factor .
 
     $default  reduce using rule 29 (term)
 
 
-State 80
+State 82
 
    25 expression: expression . addop term
    34 factor: func L_PAREN expression . R_PAREN
 
-    PLUS     shift, and go to state 56
-    MINUS    shift, and go to state 57
-    R_PAREN  shift, and go to state 94
+    PLUS     shift, and go to state 57
+    MINUS    shift, and go to state 58
+    R_PAREN  shift, and go to state 96
 
-    addop  go to state 58
+    addop  go to state 59
 
 
-State 81
+State 83
 
    54 var: IDENTIFIER L_BRACKET NUMBER R_BRACKET .
 
     $default  reduce using rule 54 (var)
 
 
-State 82
+State 84
 
    25 expression: expression . addop term
    50 factor_bool: L_PAREN expression . R_PAREN
 
-    PLUS     shift, and go to state 56
-    MINUS    shift, and go to state 57
-    R_PAREN  shift, and go to state 95
+    PLUS     shift, and go to state 57
+    MINUS    shift, and go to state 58
+    R_PAREN  shift, and go to state 97
 
-    addop  go to state 58
+    addop  go to state 59
 
 
-State 83
+State 85
 
    43 ne_comp: LESSTHAN .
 
     $default  reduce using rule 43 (ne_comp)
 
 
-State 84
+State 86
 
    44 ne_comp: GREATERTHAN .
 
     $default  reduce using rule 44 (ne_comp)
 
 
-State 85
+State 87
 
    42 ne_comp: ISNOTEQUAL .
 
     $default  reduce using rule 42 (ne_comp)
 
 
-State 86
+State 88
 
    21 s_if: IF L_PAREN neg expression_bool R_PAREN . L_CURLY statements R_CURLY
    22     | IF L_PAREN neg expression_bool R_PAREN . L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY
    23     | IF L_PAREN neg expression_bool R_PAREN . L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY
 
-    L_CURLY  shift, and go to state 96
+    L_CURLY  shift, and go to state 98
 
 
-State 87
+State 89
 
    40 expression_bool: expression_bool ne_comp . term_bool
 
-    L_PAREN     shift, and go to state 69
+    L_PAREN     shift, and go to state 70
     IDENTIFIER  shift, and go to state 23
-    NUMBER      shift, and go to state 70
+    NUMBER      shift, and go to state 71
 
-    term_bool    go to state 97
-    factor_bool  go to state 73
-    var          go to state 74
+    term_bool    go to state 99
+    factor_bool  go to state 74
+    var          go to state 75
 
 
-State 88
+State 90
 
    47 e_comp: ISEQUAL .
 
     $default  reduce using rule 47 (e_comp)
 
 
-State 89
+State 91
 
    49 e_comp: GTEQUAL .
 
     $default  reduce using rule 49 (e_comp)
 
 
-State 90
+State 92
 
    48 e_comp: LTEQUAL .
 
     $default  reduce using rule 48 (e_comp)
 
 
-State 91
+State 93
 
    45 term_bool: term_bool e_comp . factor_bool
 
-    L_PAREN     shift, and go to state 69
+    L_PAREN     shift, and go to state 70
     IDENTIFIER  shift, and go to state 23
-    NUMBER      shift, and go to state 70
+    NUMBER      shift, and go to state 71
 
-    factor_bool  go to state 98
-    var          go to state 74
-
-
-State 92
-
-   24 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN . L_CURLY statements R_CURLY
-
-    L_CURLY  shift, and go to state 99
-
-
-State 93
-
-   58 declaration: INTEGER IDENTIFIER L_BRACKET expression R_BRACKET . SEMICOLON
-
-    SEMICOLON  shift, and go to state 100
+    factor_bool  go to state 100
+    var          go to state 75
 
 
 State 94
+
+   24 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN . L_CURLY statements R_CURLY
+
+    L_CURLY  shift, and go to state 101
+
+
+State 95
+
+   59 declaration: INTEGER IDENTIFIER L_BRACKET expression R_BRACKET .
+
+    $default  reduce using rule 59 (declaration)
+
+
+State 96
 
    34 factor: func L_PAREN expression R_PAREN .
 
     $default  reduce using rule 34 (factor)
 
 
-State 95
+State 97
 
    50 factor_bool: L_PAREN expression R_PAREN .
 
     $default  reduce using rule 50 (factor_bool)
 
 
-State 96
+State 98
 
    21 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY . statements R_CURLY
    22     | IF L_PAREN neg expression_bool R_PAREN L_CURLY . statements R_CURLY IFELSE neg L_CURLY statements R_CURLY
    23     | IF L_PAREN neg expression_bool R_PAREN L_CURLY . statements R_CURLY ELSE L_CURLY statements R_CURLY
-
-    READ        shift, and go to state 17
-    WRITE       shift, and go to state 18
-    IF          shift, and go to state 19
-    WHILELOOP   shift, and go to state 20
-    INTEGER     shift, and go to state 21
-    RETURN      shift, and go to state 22
-    IDENTIFIER  shift, and go to state 23
-
-    $default  reduce using rule 10 (statements)
-
-    statements   go to state 101
-    statement_p  go to state 25
-    statement    go to state 26
-    s_var        go to state 27
-    s_if         go to state 28
-    s_while      go to state 29
-    var          go to state 30
-    declaration  go to state 31
-
-
-State 97
-
-   40 expression_bool: expression_bool ne_comp term_bool .
-   45 term_bool: term_bool . e_comp factor_bool
-
-    ISEQUAL  shift, and go to state 88
-    GTEQUAL  shift, and go to state 89
-    LTEQUAL  shift, and go to state 90
-
-    $default  reduce using rule 40 (expression_bool)
-
-    e_comp  go to state 91
-
-
-State 98
-
-   45 term_bool: term_bool e_comp factor_bool .
-
-    $default  reduce using rule 45 (term_bool)
-
-
-State 99
-
-   24 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY . statements R_CURLY
 
     READ        shift, and go to state 17
     WRITE       shift, and go to state 18
@@ -1194,76 +1182,30 @@ State 99
     declaration  go to state 31
 
 
+State 99
+
+   40 expression_bool: expression_bool ne_comp term_bool .
+   45 term_bool: term_bool . e_comp factor_bool
+
+    ISEQUAL  shift, and go to state 90
+    GTEQUAL  shift, and go to state 91
+    LTEQUAL  shift, and go to state 92
+
+    $default  reduce using rule 40 (expression_bool)
+
+    e_comp  go to state 93
+
+
 State 100
 
-   58 declaration: INTEGER IDENTIFIER L_BRACKET expression R_BRACKET SEMICOLON .
+   45 term_bool: term_bool e_comp factor_bool .
 
-    $default  reduce using rule 58 (declaration)
+    $default  reduce using rule 45 (term_bool)
 
 
 State 101
 
-   21 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements . R_CURLY
-   22     | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements . R_CURLY IFELSE neg L_CURLY statements R_CURLY
-   23     | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements . R_CURLY ELSE L_CURLY statements R_CURLY
-
-    R_CURLY  shift, and go to state 103
-
-
-State 102
-
-   24 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements . R_CURLY
-
-    R_CURLY  shift, and go to state 104
-
-
-State 103
-
-   21 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY .
-   22     | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY . IFELSE neg L_CURLY statements R_CURLY
-   23     | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY . ELSE L_CURLY statements R_CURLY
-
-    IFELSE  shift, and go to state 105
-    ELSE    shift, and go to state 106
-
-    $default  reduce using rule 21 (s_if)
-
-
-State 104
-
-   24 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY .
-
-    $default  reduce using rule 24 (s_while)
-
-
-State 105
-
-   22 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE . neg L_CURLY statements R_CURLY
-
-    NOT  shift, and go to state 51
-
-    $default  reduce using rule 56 (neg)
-
-    neg  go to state 107
-
-
-State 106
-
-   23 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE . L_CURLY statements R_CURLY
-
-    L_CURLY  shift, and go to state 108
-
-
-State 107
-
-   22 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg . L_CURLY statements R_CURLY
-
-    L_CURLY  shift, and go to state 109
-
-
-State 108
-
-   23 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY . statements R_CURLY
+   24 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY . statements R_CURLY
 
     READ        shift, and go to state 17
     WRITE       shift, and go to state 18
@@ -1275,7 +1217,7 @@ State 108
 
     $default  reduce using rule 10 (statements)
 
-    statements   go to state 110
+    statements   go to state 103
     statement_p  go to state 25
     statement    go to state 26
     s_var        go to state 27
@@ -1285,9 +1227,69 @@ State 108
     declaration  go to state 31
 
 
+State 102
+
+   21 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements . R_CURLY
+   22     | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements . R_CURLY IFELSE neg L_CURLY statements R_CURLY
+   23     | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements . R_CURLY ELSE L_CURLY statements R_CURLY
+
+    R_CURLY  shift, and go to state 104
+
+
+State 103
+
+   24 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements . R_CURLY
+
+    R_CURLY  shift, and go to state 105
+
+
+State 104
+
+   21 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY .
+   22     | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY . IFELSE neg L_CURLY statements R_CURLY
+   23     | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY . ELSE L_CURLY statements R_CURLY
+
+    IFELSE  shift, and go to state 106
+    ELSE    shift, and go to state 107
+
+    $default  reduce using rule 21 (s_if)
+
+
+State 105
+
+   24 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY .
+
+    $default  reduce using rule 24 (s_while)
+
+
+State 106
+
+   22 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE . neg L_CURLY statements R_CURLY
+
+    NOT  shift, and go to state 51
+
+    $default  reduce using rule 56 (neg)
+
+    neg  go to state 108
+
+
+State 107
+
+   23 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE . L_CURLY statements R_CURLY
+
+    L_CURLY  shift, and go to state 109
+
+
+State 108
+
+   22 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg . L_CURLY statements R_CURLY
+
+    L_CURLY  shift, and go to state 110
+
+
 State 109
 
-   22 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY . statements R_CURLY
+   23 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY . statements R_CURLY
 
     READ        shift, and go to state 17
     WRITE       shift, and go to state 18
@@ -1311,26 +1313,50 @@ State 109
 
 State 110
 
-   23 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements . R_CURLY
+   22 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY . statements R_CURLY
 
-    R_CURLY  shift, and go to state 112
+    READ        shift, and go to state 17
+    WRITE       shift, and go to state 18
+    IF          shift, and go to state 19
+    WHILELOOP   shift, and go to state 20
+    INTEGER     shift, and go to state 21
+    RETURN      shift, and go to state 22
+    IDENTIFIER  shift, and go to state 23
+
+    $default  reduce using rule 10 (statements)
+
+    statements   go to state 112
+    statement_p  go to state 25
+    statement    go to state 26
+    s_var        go to state 27
+    s_if         go to state 28
+    s_while      go to state 29
+    var          go to state 30
+    declaration  go to state 31
 
 
 State 111
 
-   22 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements . R_CURLY
+   23 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements . R_CURLY
 
     R_CURLY  shift, and go to state 113
 
 
 State 112
 
+   22 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements . R_CURLY
+
+    R_CURLY  shift, and go to state 114
+
+
+State 113
+
    23 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY .
 
     $default  reduce using rule 23 (s_if)
 
 
-State 113
+State 114
 
    22 s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY .
 
