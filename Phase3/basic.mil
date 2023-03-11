@@ -2,4 +2,6 @@ func main
 . x
 . y
 = x, 
+.> 
+endfunc
 

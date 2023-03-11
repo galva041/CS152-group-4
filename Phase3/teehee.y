@@ -122,6 +122,8 @@ function: FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CUR
     // statements
     CodeNode *statements = $7;
     node->code += statements->code;
+
+    node->code += std::string("endfunc\n");
     $$ = node;
 }
     ;
@@ -181,7 +183,14 @@ statement:
         $$ = node;
     }
     | READ L_PAREN var R_PAREN {}
-    | WRITE L_PAREN expression R_PAREN {}
+    | WRITE L_PAREN expression R_PAREN {
+        CodeNode *node = new CodeNode;
+        CodeNode *expression = $3;
+        std::string id = expression->name;
+        node->code = "";
+        node->code += std::string(".> ") + id + std::string("\n");
+        $$ = node;
+    }
     | RETURN expression {}
     ;
 
@@ -337,14 +346,14 @@ declaration: INTEGER IDENTIFIER  {
         node->code += std::string(". ") + id + std::string("\n");
         $$ = node;
     }
-     | INTEGER IDENTIFIER EQUALS expression  {
-         CodeNode *code_node1 = new CodeNode;
-         std::string id = $2;
-         CodeNode *expression = $4;
-         code_node1->code += expression->code;
-         code_node1->code += std::string(". hello") + id + expression->name + std::string("\n");
-         $$ = code_node1; 
-     }
+    //  | INTEGER IDENTIFIER EQUALS expression  {
+    //      CodeNode *code_node1 = new CodeNode;
+    //      std::string id = $2;
+    //      CodeNode *expression = $4;
+    //      code_node1->code += expression->code;
+    //      code_node1->code += std::string(". hello") + id + expression->name + std::string("\n");
+    //      $$ = code_node1; 
+    //  }
     | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET 
     {
         // CodeNode *node = new CodeNode;
