@@ -534,12 +534,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    88,    88,    89,    96,   102,   111,   131,   132,   135,
-     139,   147,   151,   159,   168,   169,   173,   178,   185,   186,
-     194,   197,   206,   207,   208,   211,   214,   223,   232,   233,
-     236,   245,   254,   255,   256,   259,   264,   270,   275,   283,
-     287,   295,   296,   299,   300,   301,   304,   305,   308,   309,
-     310,   313,   314,   320,   323,   329,   339,   340,   343,   357
+       0,    87,    87,    88,    95,   101,   110,   130,   131,   134,
+     138,   146,   150,   158,   167,   168,   172,   177,   185,   186,
+     194,   197,   207,   208,   209,   212,   215,   224,   234,   235,
+     238,   247,   257,   258,   259,   262,   267,   273,   279,   287,
+     291,   299,   300,   303,   304,   305,   308,   309,   312,   313,
+     314,   317,   318,   324,   327,   333,   343,   344,   347,   361
 };
 #endif
 
@@ -1385,13 +1385,13 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 88 "teehee.y" /* yacc.c:1646  */
+#line 87 "teehee.y" /* yacc.c:1646  */
     {}
 #line 1391 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 89 "teehee.y" /* yacc.c:1646  */
+#line 88 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *code_node = (yyvsp[0].code_node);
         printf("%s\n", code_node->code.c_str());
@@ -1400,7 +1400,7 @@ yyreduce:
     break;
 
   case 4:
-#line 96 "teehee.y" /* yacc.c:1646  */
+#line 95 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         CodeNode *code_node1 = (yyvsp[0].code_node);
@@ -1411,7 +1411,7 @@ yyreduce:
     break;
 
   case 5:
-#line 102 "teehee.y" /* yacc.c:1646  */
+#line 101 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *code_node1 = (yyvsp[-1].code_node);
         CodeNode *code_node2 = (yyvsp[0].code_node);
@@ -1423,7 +1423,7 @@ yyreduce:
     break;
 
   case 6:
-#line 112 "teehee.y" /* yacc.c:1646  */
+#line 111 "teehee.y" /* yacc.c:1646  */
     {
     CodeNode *node = new CodeNode;
     std::string func_name = (yyvsp[-6].op_val);
@@ -1445,19 +1445,19 @@ yyreduce:
     break;
 
   case 7:
-#line 131 "teehee.y" /* yacc.c:1646  */
+#line 130 "teehee.y" /* yacc.c:1646  */
     {}
 #line 1451 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 132 "teehee.y" /* yacc.c:1646  */
+#line 131 "teehee.y" /* yacc.c:1646  */
     {}
 #line 1457 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 135 "teehee.y" /* yacc.c:1646  */
+#line 134 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         (yyval.code_node) = node; 
@@ -1466,7 +1466,7 @@ yyreduce:
     break;
 
   case 10:
-#line 139 "teehee.y" /* yacc.c:1646  */
+#line 138 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *code_node1 = new CodeNode;
         std::string id = (yyvsp[0].op_val);
@@ -1477,7 +1477,7 @@ yyreduce:
     break;
 
   case 11:
-#line 147 "teehee.y" /* yacc.c:1646  */
+#line 146 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         (yyval.code_node) = node; 
@@ -1486,7 +1486,7 @@ yyreduce:
     break;
 
   case 12:
-#line 151 "teehee.y" /* yacc.c:1646  */
+#line 150 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *code_node1 = (yyvsp[-2].code_node);
         CodeNode *code_node2 = (yyvsp[0].code_node);
@@ -1499,7 +1499,7 @@ yyreduce:
     break;
 
   case 13:
-#line 159 "teehee.y" /* yacc.c:1646  */
+#line 158 "teehee.y" /* yacc.c:1646  */
     {
         // CodeNode *code_node1 = $1;
         // CodeNode *code_node2 = $2;
@@ -1511,19 +1511,19 @@ yyreduce:
     break;
 
   case 14:
-#line 168 "teehee.y" /* yacc.c:1646  */
+#line 167 "teehee.y" /* yacc.c:1646  */
     {}
 #line 1517 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 169 "teehee.y" /* yacc.c:1646  */
+#line 168 "teehee.y" /* yacc.c:1646  */
     {}
 #line 1523 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 173 "teehee.y" /* yacc.c:1646  */
+#line 172 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         node->code += (yyvsp[0].code_node)->code;
@@ -1533,21 +1533,22 @@ yyreduce:
     break;
 
   case 17:
-#line 178 "teehee.y" /* yacc.c:1646  */
+#line 177 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         CodeNode *code_node1 = (yyvsp[0].code_node);
 
         node->code += code_node1->code;
+        node->name = code_node1->name;
         (yyval.code_node) = node;
     }
-#line 1545 "y.tab.c" /* yacc.c:1646  */
+#line 1546 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
 #line 185 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1551 "y.tab.c" /* yacc.c:1646  */
+#line 1552 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
@@ -1560,13 +1561,13 @@ yyreduce:
         node->code += std::string(".> ") + id + std::string("\n");
         (yyval.code_node) = node;
     }
-#line 1564 "y.tab.c" /* yacc.c:1646  */
+#line 1565 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
 #line 194 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1570 "y.tab.c" /* yacc.c:1646  */
+#line 1571 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
@@ -1574,39 +1575,40 @@ yyreduce:
     {
     CodeNode *node = new CodeNode;
     node->code = (yyvsp[0].code_node)->code;
+    node->name = (yyvsp[-2].code_node)->name;
 
     node->code += std::string("= ") + (yyvsp[-2].code_node)->name + std::string(", ") + (yyvsp[0].code_node)->name + std::string("\n");
     (yyval.code_node) = node;
 }
-#line 1582 "y.tab.c" /* yacc.c:1646  */
+#line 1584 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 206 "teehee.y" /* yacc.c:1646  */
+#line 207 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1588 "y.tab.c" /* yacc.c:1646  */
+#line 1590 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 207 "teehee.y" /* yacc.c:1646  */
+#line 208 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1594 "y.tab.c" /* yacc.c:1646  */
+#line 1596 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 208 "teehee.y" /* yacc.c:1646  */
+#line 209 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1600 "y.tab.c" /* yacc.c:1646  */
+#line 1602 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 211 "teehee.y" /* yacc.c:1646  */
+#line 212 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1606 "y.tab.c" /* yacc.c:1646  */
+#line 1608 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 214 "teehee.y" /* yacc.c:1646  */
+#line 215 "teehee.y" /* yacc.c:1646  */
     {
     CodeNode *node = new CodeNode;
     CodeNode *expression = (yyvsp[-2].code_node);
@@ -1616,35 +1618,36 @@ yyreduce:
     node->code += expression->code + addop->code + term->code;
     (yyval.code_node) = node;
 }
-#line 1620 "y.tab.c" /* yacc.c:1646  */
+#line 1622 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 223 "teehee.y" /* yacc.c:1646  */
+#line 224 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         CodeNode *term = (yyvsp[0].code_node);
         
+        node->name = term->name;
         node->code += term->code;
         (yyval.code_node) = node;
     }
-#line 1632 "y.tab.c" /* yacc.c:1646  */
+#line 1635 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 232 "teehee.y" /* yacc.c:1646  */
+#line 234 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1638 "y.tab.c" /* yacc.c:1646  */
+#line 1641 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 233 "teehee.y" /* yacc.c:1646  */
+#line 235 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1644 "y.tab.c" /* yacc.c:1646  */
+#line 1647 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 236 "teehee.y" /* yacc.c:1646  */
+#line 238 "teehee.y" /* yacc.c:1646  */
     {
     CodeNode *node = new CodeNode;
     CodeNode *term = (yyvsp[-2].code_node);
@@ -1654,197 +1657,199 @@ yyreduce:
     node->code += term->code + mulop->code + factor->code;
     (yyval.code_node) = node;
 }
-#line 1658 "y.tab.c" /* yacc.c:1646  */
+#line 1661 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 245 "teehee.y" /* yacc.c:1646  */
+#line 247 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         CodeNode *factor = (yyvsp[0].code_node);
         
+        node->name = factor->name;
         node->code += factor->code;
         (yyval.code_node) = node;
     }
-#line 1670 "y.tab.c" /* yacc.c:1646  */
+#line 1674 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 254 "teehee.y" /* yacc.c:1646  */
+#line 257 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1676 "y.tab.c" /* yacc.c:1646  */
+#line 1680 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 255 "teehee.y" /* yacc.c:1646  */
+#line 258 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1682 "y.tab.c" /* yacc.c:1646  */
+#line 1686 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 256 "teehee.y" /* yacc.c:1646  */
+#line 259 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1688 "y.tab.c" /* yacc.c:1646  */
+#line 1692 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 259 "teehee.y" /* yacc.c:1646  */
+#line 262 "teehee.y" /* yacc.c:1646  */
     {
     CodeNode *node = new CodeNode;
     node->code += (yyvsp[-3].code_node)->code + (yyvsp[-1].code_node)->code;
     (yyval.code_node) = node;
 }
-#line 1698 "y.tab.c" /* yacc.c:1646  */
+#line 1702 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 264 "teehee.y" /* yacc.c:1646  */
-    {
-        CodeNode *node = new CodeNode;
-        node->code = "";
-        node->name = (yyvsp[0].int_val);
-        (yyval.code_node) = node;
-    }
-#line 1709 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 37:
-#line 270 "teehee.y" /* yacc.c:1646  */
-    {
-        CodeNode *node = new CodeNode;
-        node->code = (yyvsp[0].code_node)->code;
-        (yyval.code_node) = node;
-    }
-#line 1719 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 38:
-#line 275 "teehee.y" /* yacc.c:1646  */
-    {
-        CodeNode *node = new CodeNode;
-        node->code = "";
-        node->name = (yyvsp[-2].int_val);
-        (yyval.code_node) = node;
-    }
-#line 1730 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 39:
-#line 283 "teehee.y" /* yacc.c:1646  */
-    {
-    CodeNode *node = new CodeNode;
-    (yyval.code_node) = node;
-}
-#line 1739 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 40:
-#line 287 "teehee.y" /* yacc.c:1646  */
+#line 267 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         node->code = "";
         node->name = (yyvsp[0].op_val);
         (yyval.code_node) = node;
     }
-#line 1750 "y.tab.c" /* yacc.c:1646  */
+#line 1713 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 41:
-#line 295 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1756 "y.tab.c" /* yacc.c:1646  */
+  case 37:
+#line 273 "teehee.y" /* yacc.c:1646  */
+    {
+        CodeNode *node = new CodeNode;
+        node->code = (yyvsp[0].code_node)->code;
+        node->name = (yyvsp[0].code_node)->name;
+        (yyval.code_node) = node;
+    }
+#line 1724 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 42:
-#line 296 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1762 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 43:
-#line 299 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1768 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 44:
-#line 300 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1774 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 45:
-#line 301 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1780 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 46:
-#line 304 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1786 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 47:
-#line 305 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1792 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 48:
-#line 308 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1798 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 49:
-#line 309 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1804 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 50:
-#line 310 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1810 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 51:
-#line 313 "teehee.y" /* yacc.c:1646  */
-    {}
-#line 1816 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 52:
-#line 314 "teehee.y" /* yacc.c:1646  */
+  case 38:
+#line 279 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         node->code = "";
-        node->name = (yyvsp[0].int_val);
+        node->name = (yyvsp[-2].op_val);
         (yyval.code_node) = node;
     }
-#line 1827 "y.tab.c" /* yacc.c:1646  */
+#line 1735 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 39:
+#line 287 "teehee.y" /* yacc.c:1646  */
+    {
+    CodeNode *node = new CodeNode;
+    (yyval.code_node) = node;
+}
+#line 1744 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 40:
+#line 291 "teehee.y" /* yacc.c:1646  */
+    {
+        CodeNode *node = new CodeNode;
+        node->code = "";
+        node->name = (yyvsp[0].op_val);
+        (yyval.code_node) = node;
+    }
+#line 1755 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 41:
+#line 299 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1761 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 42:
+#line 300 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1767 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 43:
+#line 303 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1773 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 44:
+#line 304 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1779 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 45:
+#line 305 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1785 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 46:
+#line 308 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1791 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 47:
+#line 309 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1797 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 48:
+#line 312 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1803 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 49:
+#line 313 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1809 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 50:
+#line 314 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1815 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 51:
+#line 317 "teehee.y" /* yacc.c:1646  */
+    {}
+#line 1821 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 52:
+#line 318 "teehee.y" /* yacc.c:1646  */
+    {
+        CodeNode *node = new CodeNode;
+        node->code = "";
+        node->name = (yyvsp[0].op_val);
+        (yyval.code_node) = node;
+    }
+#line 1832 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 320 "teehee.y" /* yacc.c:1646  */
+#line 324 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1833 "y.tab.c" /* yacc.c:1646  */
+#line 1838 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 323 "teehee.y" /* yacc.c:1646  */
+#line 327 "teehee.y" /* yacc.c:1646  */
     {
     CodeNode *node = new CodeNode;
     node->code = "";
     node->name = (yyvsp[0].op_val);
     (yyval.code_node) = node;
 }
-#line 1844 "y.tab.c" /* yacc.c:1646  */
+#line 1849 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 329 "teehee.y" /* yacc.c:1646  */
+#line 333 "teehee.y" /* yacc.c:1646  */
     {
         std::string name = (yyvsp[-3].op_val);
         CodeNode *node = new CodeNode;
@@ -1852,34 +1857,34 @@ yyreduce:
         node->name = name;
         (yyval.code_node) = node;
     }
-#line 1856 "y.tab.c" /* yacc.c:1646  */
+#line 1861 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 339 "teehee.y" /* yacc.c:1646  */
+#line 343 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1862 "y.tab.c" /* yacc.c:1646  */
+#line 1867 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 340 "teehee.y" /* yacc.c:1646  */
+#line 344 "teehee.y" /* yacc.c:1646  */
     {}
-#line 1868 "y.tab.c" /* yacc.c:1646  */
+#line 1873 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 343 "teehee.y" /* yacc.c:1646  */
+#line 347 "teehee.y" /* yacc.c:1646  */
     {
         CodeNode *node = new CodeNode;
         std::string id = (yyvsp[0].op_val);
         node->code += std::string(". ") + id + std::string("\n");
         (yyval.code_node) = node;
     }
-#line 1879 "y.tab.c" /* yacc.c:1646  */
+#line 1884 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 358 "teehee.y" /* yacc.c:1646  */
+#line 362 "teehee.y" /* yacc.c:1646  */
     {
         // CodeNode *node = new CodeNode;
         // // identifier name
@@ -1893,11 +1898,11 @@ yyreduce:
 
         // $$ = node;
     }
-#line 1897 "y.tab.c" /* yacc.c:1646  */
+#line 1902 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1901 "y.tab.c" /* yacc.c:1646  */
+#line 1906 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2125,7 +2130,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 373 "teehee.y" /* yacc.c:1906  */
+#line 377 "teehee.y" /* yacc.c:1906  */
 
 
 int main(int argc, char **argv)

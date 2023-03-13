@@ -79,8 +79,7 @@ void print_symbol_table(void) {
 %define parse.error verbose
 %start prog_start
 %token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN
-%token <op_val> IDENTIFIER
-%token <int_val> NUMBER
+%token <op_val> IDENTIFIER NUMBER
 %type <code_node> functions function arguments argument declaration statement statements s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg
 
 %%
@@ -180,6 +179,7 @@ statement:
         CodeNode *code_node1 = $1;
 
         node->code += code_node1->code;
+        node->name = code_node1->name;
         $$ = node;
     }
     | READ L_PAREN var R_PAREN {}
@@ -197,6 +197,7 @@ statement:
 s_var: var EQUALS expression {
     CodeNode *node = new CodeNode;
     node->code = $3->code;
+    node->name = $1->name;
 
     node->code += std::string("= ") + $1->name + std::string(", ") + $3->name + std::string("\n");
     $$ = node;
@@ -224,6 +225,7 @@ expression: expression addop term {
         CodeNode *node = new CodeNode;
         CodeNode *term = $1;
         
+        node->name = term->name;
         node->code += term->code;
         $$ = node;
     }
@@ -246,6 +248,7 @@ term: term mulop factor {
         CodeNode *node = new CodeNode;
         CodeNode *factor = $1;
         
+        node->name = factor->name;
         node->code += factor->code;
         $$ = node;
     }
@@ -270,6 +273,7 @@ factor: func L_PAREN expression R_PAREN {
     | var {
         CodeNode *node = new CodeNode;
         node->code = $1->code;
+        node->name = $1->name;
         $$ = node;
     }
     | NUMBER DECIMAL NUMBER {

@@ -2,6 +2,7 @@ queen main() {
     int x;
     int y;
 
+   x isgiving y;
    x isgiving 2;
    slout(x);
 }

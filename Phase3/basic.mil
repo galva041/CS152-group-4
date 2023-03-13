@@ -1,7 +1,8 @@
 func main
 . x
 . y
-= x, 
-.> 
+= x, y
+= x, 2
+.> x
 endfunc
 
