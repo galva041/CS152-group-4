@@ -1,15 +1,30 @@
 %{
     #include "y.tab.h"
+     #include<string>
+    #include<vector>
+    #include<string.h>
+    #include "y.tab.h"
 
     int lineCount = 1;
     int posCount = 1;
+    extern char *identToken;
+    extern int numberToken;
+
+
 %}
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
 
 %%
-{DIGIT}+ {return NUMBER; posCount+= yyleng;}
+{DIGIT}+ {
+posCount+= yyleng;
+char * token = new char[yyleng];
+strcpy(token, yytext);
+yylval.op_val = token;
+numberToken = atoi(yytext);
+return NUMBER; 
+}
 
 "+"      {posCount += yyleng; return PLUS;}
 "-"      {posCount += yyleng; return MINUS;}
@@ -48,7 +63,13 @@ int   {posCount += yyleng; return INTEGER;}
 queen  {posCount += yyleng; return FUNCTION;}
 slay  {posCount += yyleng; return RETURN;}
 
-[a-zA-Z][a-zA-Z0-9]* {posCount += yyleng; return IDENTIFIER;}
+[a-zA-Z][a-zA-Z0-9]* {posCount += yyleng; 
+char * token = new char[yyleng];
+strcpy(token, yytext);
+yylval.op_val = token;
+identToken = yytext;
+return IDENTIFIER;
+}
 [0-9][a-zA-Z0-9]* {printf("Invalid IDENTIFIER -> %s, line %d, position %d\n", yytext, lineCount, posCount); exit(0);}
 .   {printf("ERROR: invalid character -> %s, line %d, position %d\n", yytext, lineCount, posCount); exit(0);}
 %%

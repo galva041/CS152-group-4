@@ -1,0 +1,20 @@
+queen main () {
+    int a[20];
+    int b;
+    int c;
+
+    b isgiving 3;
+    c isgiving 5;
+
+    a[0] isgiving b + c;
+    slout(a[0]);
+
+    a[1] isgiving 100;
+    slout(a[1]);
+
+    a[2] isgiving 200;
+    slout(a[2]);
+
+    a[3] isgiving a[0] * (a[1] + c);
+    slout(a[3]);
+}

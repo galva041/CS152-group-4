@@ -1,5 +1,8 @@
 func main
-. n
-= n, 150
-.> n
+. x
+. y
+= x, y
+= x, 2
+.> x
 endfunc
+
