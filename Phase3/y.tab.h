@@ -86,7 +86,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 73 "teehee.y" /* yacc.c:1909  */
+#line 82 "teehee.y" /* yacc.c:1909  */
 
   struct CodeNode *code_node;
   char *op_val;

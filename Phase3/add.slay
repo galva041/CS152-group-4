@@ -1,0 +1,10 @@
+queen main() {
+    int a;
+    int b;
+    int c;
+
+    a isgiving 100;
+    b isgiving 50;
+    c isgiving a + b;
+    slout(c);
+}

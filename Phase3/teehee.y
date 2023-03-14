@@ -5,6 +5,7 @@
     #include<vector>
     #include<string.h>
     #include "y.tab.h"
+    #include <sstream>
 
     extern int yylex(void);
     void yyerror(const char *msg);
@@ -13,6 +14,14 @@
     char *identToken;
     int numberToken;
     int  count_names = 0;
+    int count_temp = 0;
+
+std::string create_temp() {
+    std::stringstream temp; 
+    temp << "_temp" << count_temp;
+    count_temp += 1;
+    return temp.str();
+}
 
 enum Type { Integer, Array };
 struct Symbol {
@@ -80,7 +89,7 @@ void print_symbol_table(void) {
 %start prog_start
 %token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN
 %token <op_val> IDENTIFIER NUMBER
-%type <code_node> functions function arguments argument declaration statement statements s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg
+%type <code_node> functions function arguments argument declaration statement statements s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
 
 %%
 
@@ -124,6 +133,8 @@ function: FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CUR
 
     node->code += std::string("endfunc\n");
     $$ = node;
+
+    add_function_to_symbol_table(func_name);
 }
     ;
 
@@ -136,10 +147,13 @@ argument: %empty /* epsilon */ {
         $$ = node; 
     }
     | INTEGER IDENTIFIER {
-        CodeNode *code_node1 = new CodeNode;
-        std::string id = $2;
-        code_node1->code += std::string(". ") + id + std::string("\n");
-        $$ = code_node1;
+        // CodeNode *code_node1 = new CodeNode;
+        // std::string id = $2;
+        // code_node1->code += std::string(". ") + id + std::string("\n");
+        // $$ = code_node1;
+
+        // Type t = Integer;
+        // add_variable_to_symbol_table(id , t);
     }
     ;
 
@@ -187,11 +201,52 @@ statement:
         CodeNode *node = new CodeNode;
         CodeNode *expression = $3;
         std::string id = expression->name;
-        node->code = "";
+        node->code = expression->code;
         node->code += std::string(".> ") + id + std::string("\n");
         $$ = node;
     }
+    | arr_decl {
+        // CodeNode *node = new CodeNode;
+        // node->code += $1->code;
+        // node->name = $1->name;
+        // $$ = node;
+    }
+    | arr_assn {
+        // CodeNode *node = new CodeNode;
+        // node->code += $1->code;
+        // node->name = $1->name;
+        // $$ = node;
+    }
     | RETURN expression {}
+    ;
+
+arr_decl: INTEGER IDENTIFIER L_BRACKET NUMBER R_BRACKET  {
+    // std::string tmp = create_temp();
+    // CodeNode *tmp_node = new CodeNode;
+    // tmp_node->name = tmp;
+    // tmp_node->code += tmp;
+
+    std::string id = $2;
+    std::string num = $4;
+    
+    CodeNode *node = new CodeNode;
+    node->code = std::string(".[] ") + id + std::string(", ") + num + std::string("\n");
+    node->name = id;
+    $$ = node;
+}
+    ;
+
+arr_assn: IDENTIFIER L_BRACKET NUMBER R_BRACKET EQUALS expression {
+    //std::string temp = create_temp();
+    std::string name = $1;
+    std::string num = $3;
+
+    CodeNode *node = new CodeNode;
+    //node->code = std::string(". ") + temp + std::string("\n");
+    node->code += $6->code;
+    node->code += std::string("[]= ") + name + std::string(", ") + num + std::string(", ") + $6->name + std::string("\n");
+    $$ = node;
+}
     ;
 
 s_var: var EQUALS expression {
@@ -213,13 +268,16 @@ s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURL
     ;
 
 expression: expression addop term {
+    std::string temp = create_temp();
+
+    CodeNode* addop_node = $2;
+
     CodeNode *node = new CodeNode;
-    CodeNode *expression = $1;
-    CodeNode *addop = $2;
-    CodeNode *term = $3;
-    
-    node->code += expression->code + addop->code + term->code;
-    $$ = node;
+    node->code = $1->code + $3->code + std::string(". ")  + temp + std::string("\n");
+
+    node->code += addop_node->name + temp + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+    node->name = temp;
+    $$ = node; 
 }
     | term {
         CodeNode *node = new CodeNode;
@@ -231,18 +289,31 @@ expression: expression addop term {
     }
     ;
 
-addop: PLUS {}
-    | MINUS {}
+addop: PLUS {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("+ ");
+        node->code += "";
+        $$ = node;
+    }
+    | MINUS {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("- ");
+        node->code += "";
+        $$ = node;
+    }
     ;
 
 term: term mulop factor {
+    std::string temp = create_temp();
+
+    CodeNode* mulop_node = $2;
+  
     CodeNode *node = new CodeNode;
-    CodeNode *term = $1;
-    CodeNode *mulop = $2;
-    CodeNode *factor = $3;
-    
-    node->code += term->code + mulop->code + factor->code;
-    $$ = node;
+    node->code = $1->code + $3->code + std::string(". ")  + temp  + std::string("\n");
+
+    node->code += mulop_node->name + temp + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+    node->name = temp;
+    $$ = node; 
 }
     | factor {
         CodeNode *node = new CodeNode;
@@ -254,19 +325,35 @@ term: term mulop factor {
     }
     ;
 
-mulop: MULT {}
-    | DIV {}
-    | MOD {}
+mulop: MULT {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("* ");
+        node->code += "";
+        $$ = node;
+    }   
+    | DIV {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("/ ");
+        node->code += "";
+        $$ = node;
+    }
+    | MOD {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("\% ");
+        node->code += "";
+        $$ = node;
+    }
     ;
 
 factor: func L_PAREN expression R_PAREN {
     CodeNode *node = new CodeNode;
+    node->name = $3->name;
     node->code += $1->code + $3->code;
     $$ = node;
 }
     | NUMBER {
         CodeNode *node = new CodeNode;
-        node->code = "";
+        //node->code = "";
         node->name = $1;
         $$ = node;
     }
@@ -282,6 +369,26 @@ factor: func L_PAREN expression R_PAREN {
         node->name = $1;
         $$ = node;
     }
+    | arr_access {
+        CodeNode *node = new CodeNode;
+        node->code = $1->code;
+        node->name = $1->name;
+        $$ = node;
+    }
+    ;
+
+arr_access: IDENTIFIER L_BRACKET NUMBER R_BRACKET {
+        std::string id = $1;
+        std::string index = $3;
+        std::string tmp = create_temp();
+
+        CodeNode *node = new CodeNode;
+        node->name = tmp;
+        node->code = std::string(". ") + tmp + std::string("\n");
+        node->code += std::string("=[] ") + tmp + std::string(", ") + id + std::string(", ") + index + std::string("\n");
+
+        $$ = node;
+    } 
     ;
 
 func: %empty {
@@ -330,13 +437,20 @@ var: IDENTIFIER {
     node->name = $1;
     $$ = node;
 }
-    | IDENTIFIER L_BRACKET NUMBER R_BRACKET {
-        std::string name = $1;
-        CodeNode *node = new CodeNode;
-        node->code = "";
-        node->name = name;
-        $$ = node;
-    }
+    // | IDENTIFIER L_BRACKET NUMBER R_BRACKET {
+    //     std::string tmp = create_temp();
+    //     CodeNode *tmp_node = new CodeNode;
+    //     tmp_node->name = tmp;
+    //     tmp_node->code += tmp;
+
+    //     std::string name = $1;
+    //     std::string num = $3;
+
+    //     CodeNode *node = new CodeNode;
+    //     node->code = tmp_node->code;
+    //     node->name = std::string("[] ") + name + std::string(", ") + num;
+    //     $$ = node;
+    // }
     ;
 
 neg: 
@@ -349,29 +463,23 @@ declaration: INTEGER IDENTIFIER  {
         std::string id = $2;
         node->code += std::string(". ") + id + std::string("\n");
         $$ = node;
-    }
-    //  | INTEGER IDENTIFIER EQUALS expression  {
-    //      CodeNode *code_node1 = new CodeNode;
-    //      std::string id = $2;
-    //      CodeNode *expression = $4;
-    //      code_node1->code += expression->code;
-    //      code_node1->code += std::string(". hello") + id + expression->name + std::string("\n");
-    //      $$ = code_node1; 
-    //  }
-    | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET 
-    {
-        // CodeNode *node = new CodeNode;
-        // // identifier name
-        // CodeNode *code_node1 = new CodeNode;
-        // std::string id = $2;
-        // code_node1->code += std::string(". ") + id + std::string("\n");
 
-        // // expressions 
-        // CodeNode *expression = $4;
-        // code_node1->code += expression->code;
-
-        // $$ = node;
+        //Type t = Integer;
+        // add_variable_to_symbol_table(id , t);
     }
+    // | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET 
+    // {
+    //     std::string tmp = create_temp();
+    //     CodeNode *tmp_node = new CodeNode;
+    //     tmp_node->name = tmp;
+    //     tmp_node->code += tmp;
+
+    //     std::string id = $2;
+        
+    //     CodeNode *node = new CodeNode;
+    //     node->code = std::string(". ") + tmp_node->code + std::string("\n");
+    //     $$ = node;
+    // }
     ;
 
 %%
@@ -379,7 +487,7 @@ declaration: INTEGER IDENTIFIER  {
 int main(int argc, char **argv)
 {
     yyparse();
-//    print_symbol_table();
+   print_symbol_table();
    return 0;
 }
 
