@@ -15,6 +15,14 @@
     int numberToken;
     int  count_names = 0;
     int count_temp = 0;
+    int count_params = 0;
+
+std::string output_params(){
+    std::stringstream params; 
+    params << count_params;
+    count_params += 1;
+    return params.str();
+}
 
 std::string create_temp() {
     std::stringstream temp; 
@@ -125,32 +133,83 @@ function: FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CUR
 
     // params arguments
     CodeNode *arguments = $4;
+    count_params = 0;
     node->code += arguments->code;
+    std::string n = arguments->name;
+    // printf("%s ", n.c_str());
+    //node->code += std::string("= ") + arguments->name + std::string(", $0\n");
+
 
     // statements
     CodeNode *statements = $7;
     node->code += statements->code;
 
-    node->code += std::string("endfunc\n");
+    node->code += std::string("endfunc\n\n");
     $$ = node;
 
     add_function_to_symbol_table(func_name);
 }
     ;
 
-arguments: argument {}
-    | argument COMMA arguments {}
-    ;
-
-argument: %empty /* epsilon */ {
+arguments: 
+    %empty /* epsilon */ {
         CodeNode *node = new CodeNode;
         $$ = node; 
     }
-    | INTEGER IDENTIFIER {
-        // CodeNode *code_node1 = new CodeNode;
-        // std::string id = $2;
-        // code_node1->code += std::string(". ") + id + std::string("\n");
-        // $$ = code_node1;
+    | argument {
+        CodeNode *node = new CodeNode;
+        
+        node->code = $1->code;
+        node->name = $1->name;
+
+        $$ = node;
+    }
+    | argument COMMA arguments 
+    {
+        CodeNode *node = new CodeNode;
+        node->code = $1->code;
+        node->name = $1->name;
+
+        //std::string dest1 = std::string("= ") + $1->name + std::string(", $0\n");
+
+        node->code += $3->code;
+        node->name += $3->name;
+
+        //std::string dest2 = std::string("= ") + $3->name + std::string(", $1\n");
+
+        //node->code += dest1 + dest2;
+
+        $$ = node;
+    }
+    ;
+
+argument: 
+   
+    INTEGER IDENTIFIER {
+        CodeNode *node = new CodeNode;
+        std::string id = $2;
+        node->code += std::string(". ") + id + std::string("\n");
+        node->code += std::string("= ") + id + std::string(", $") + output_params() + std::string("\n");
+        node->name = id;
+        $$ = node;
+
+        //Type t = Integer;
+        //add_variable_to_symbol_table(id , t);
+    }
+    | expression {
+        CodeNode *node = new CodeNode;
+        node->code = std::string(". ") + $1->name + std::string("\n");
+        node->code += std::string("param ") + $1->name + std::string("\n");
+        node->code += $1->code;
+        node->name = $1->name;
+        $$ = node;
+    }
+    | IDENTIFIER {
+        CodeNode *node = new CodeNode;
+        std::string id = $1;
+        node->code += std::string("param ") + id + std::string("\n");
+        node->name = id;
+        $$ = node;
 
         // Type t = Integer;
         // add_variable_to_symbol_table(id , t);
@@ -217,7 +276,14 @@ statement:
         // node->name = $1->name;
         // $$ = node;
     }
-    | RETURN expression {}
+    | RETURN expression {
+        CodeNode *node = new CodeNode;
+        CodeNode *expression = $2;
+        node->code = "";
+        node->name = expression->name;
+        node->code += expression->code + std::string("ret ") + expression->name + std::string ("\n");
+        $$ = node;
+    }
     ;
 
 arr_decl: INTEGER IDENTIFIER L_BRACKET NUMBER R_BRACKET  {
@@ -233,6 +299,9 @@ arr_decl: INTEGER IDENTIFIER L_BRACKET NUMBER R_BRACKET  {
     node->code = std::string(".[] ") + id + std::string(", ") + num + std::string("\n");
     node->name = id;
     $$ = node;
+
+    Type t = Integer;
+    add_variable_to_symbol_table(id , t);
 }
     ;
 
@@ -345,12 +414,21 @@ mulop: MULT {
     }
     ;
 
-factor: func L_PAREN expression R_PAREN {
-    CodeNode *node = new CodeNode;
-    node->name = $3->name;
-    node->code += $1->code + $3->code;
-    $$ = node;
-}
+    factor: func L_PAREN arguments R_PAREN {
+        CodeNode *node = new CodeNode;
+        CodeNode *arguments = $3;
+        std::string tmp = create_temp();
+        std::string func = $1->name;
+        //node->name = $3->name;
+        //node->code += $1->code + $3->code;
+        //node->code += std::string("pissnshit") + $1->code;
+        node->name = tmp;
+        node->code =  arguments->code;
+        node->code += std::string(". ") + tmp + std::string("\n");
+        node->code += std::string("call ") + func + std::string(", ")+ tmp + std::string("\n");
+
+        $$ = node;
+    }
     | NUMBER {
         CodeNode *node = new CodeNode;
         //node->code = "";
@@ -436,6 +514,8 @@ var: IDENTIFIER {
     node->code = "";
     node->name = $1;
     $$ = node;
+    Type t = Integer;
+    add_variable_to_symbol_table(node->name, t);
 }
     // | IDENTIFIER L_BRACKET NUMBER R_BRACKET {
     //     std::string tmp = create_temp();
@@ -465,7 +545,7 @@ declaration: INTEGER IDENTIFIER  {
         $$ = node;
 
         //Type t = Integer;
-        // add_variable_to_symbol_table(id , t);
+       // add_variable_to_symbol_table(id , t);
     }
     // | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET 
     // {
