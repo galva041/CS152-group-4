@@ -32,6 +32,7 @@ func main
 .> _temp8
 endfunc
 
+
 symbol table:
 --------------------
 function: main

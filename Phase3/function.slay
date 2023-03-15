@@ -14,9 +14,10 @@ queen main() {
 
     a isgiving 100;
     b isgiving 50;
-    :sob: c isgiving add(a,b);
+    c isgiving add(a,b);
     slout(c);
 
-    :sob: d isgiving mult(c, a+b);
+    d isgiving mult(c, a+b);
     slout(d);
 }
+
