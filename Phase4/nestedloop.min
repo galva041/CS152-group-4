@@ -21,6 +21,9 @@ func main
 = j, _temp2
 := beginloop0
 : endloop0
+. _temp3
++ _temp3, i, 1
+= i, _temp3
 := beginloop1
 : endloop1
 endfunc

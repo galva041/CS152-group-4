@@ -97,7 +97,7 @@ void print_symbol_table(void) {
 %start prog_start
 %token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN
 %token <op_val> IDENTIFIER NUMBER
-%type <code_node> functions function arguments argument declaration statement statements s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
+%type <code_node> functions function arguments argument declaration statement statements statement_p s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
 
 %%
 
@@ -178,15 +178,19 @@ statements: %empty {
         $$ = node;
     }
     | statement_p statements {
-        // CodeNode *code_node1 = $1;
-        // CodeNode *code_node2 = $2;
-        // CodeNode *node = new CodeNode;
-        // node->code += code_node1->code + code_node2->code;
-        // $$ = node;
+        CodeNode *code_node1 = $1;
+        CodeNode *code_node2 = $2;
+        CodeNode *node = new CodeNode;
+        node->code += code_node1->code + code_node2->code;
+        $$ = node;
     }
     ;
 
-statement_p : s_if {}
+statement_p : s_if {
+    CodeNode *node = new CodeNode;
+    node = $1;
+    $$=node;
+    }
     | s_while {}
     ;
 
