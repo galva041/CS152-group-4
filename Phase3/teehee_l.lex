@@ -38,6 +38,7 @@ return NUMBER;
 "isnt"    {posCount += yyleng; return ISNOTEQUAL;}
 "isgivingsmall" {posCount += yyleng; return LTEQUAL;}
 "isgivingbigger" {posCount += yyleng; return GTEQUAL;}
+"broke" {posCount += yyleng; return BREAK;}
 ";"   {posCount += yyleng; return SEMICOLON;}
 "("   {posCount += yyleng; return L_PAREN;}
 ")"   {posCount += yyleng; return R_PAREN;}

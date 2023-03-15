@@ -10,12 +10,14 @@
     extern int yylex(void);
     void yyerror(const char *msg);
     extern int lineCount;
-
+    int position = 0;
     char *identToken;
     int numberToken;
     int  count_names = 0;
     int count_temp = 0;
     int count_loops = 0;
+    int count_ifs = 0;
+    int count_elses = 0;
 
 std::string create_temp() {
     std::stringstream temp; 
@@ -31,18 +33,34 @@ std::string create_loop(){
     return loop.str();
 }
 
+std::string create_ifs(){
+    std::stringstream ifs;
+    ifs << count_ifs;
+    count_ifs += 1;
+    return ifs.str();
+}
+
+std::string create_else(){
+    std::stringstream elses;
+    elses << count_elses;
+    count_elses += 1;
+    return elses.str();
+}
+
 enum Type { Integer, Array };
 struct Symbol {
   std::string name;
   Type type;
+  int symCount;
 };
 struct Function {
   std::string name;
-  std::vector<Symbol> declarations;
+//   std::vector<Symbol> declarations;
+  int funcCount;
 };
 
 std::vector <Function> symbol_table;
-
+std::vector <Symbol> declarations;
 
 Function *get_function() {
   int last = symbol_table.size()-1;
@@ -50,10 +68,12 @@ Function *get_function() {
 }
 
 bool find(std::string &value) {
-  Function *f = get_function();
-  for(int i=0; i < f->declarations.size(); i++) {
-    Symbol *s = &f->declarations[i];
-    if (s->name == value) {
+//   Function *f = get_function();
+//   for(int i=0; i < f->declarations.size(); i++) {
+  for(int i=0; i < declarations.size(); i++) {
+    // Symbol *s = declarations[i];
+    Symbol s = declarations[i];
+    if (s.name == value) {
       return true;
     }
   }
@@ -63,6 +83,8 @@ bool find(std::string &value) {
 void add_function_to_symbol_table(std::string &value) {
   Function f; 
   f.name = value; 
+  f.funcCount = position;
+  position++;
   symbol_table.push_back(f);
 }
 
@@ -70,8 +92,10 @@ void add_variable_to_symbol_table(std::string &value, Type t) {
   Symbol s;
   s.name = value;
   s.type = t;
-  Function *f = get_function();
-  f->declarations.push_back(s);
+  s.symCount = position;
+//   Function *f = get_function();
+//   f->declarations.push_back(s);
+  declarations.push_back(s);
 }
 
 void print_symbol_table(void) {
@@ -79,12 +103,14 @@ void print_symbol_table(void) {
   printf("--------------------\n");
   for(int i=0; i<symbol_table.size(); i++) {
     printf("function: %s\n", symbol_table[i].name.c_str());
-    for(int j=0; j<symbol_table[i].declarations.size(); j++) {
-      printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
+    for(int j=0; j<declarations.size(); j++) {
+        if (symbol_table[i].funcCount == declarations[j].symCount) 
+          printf("  locals: %s\n", declarations[j].name.c_str());
     }
   }
   printf("--------------------\n");
 }
+
 %}
 
 %union {
@@ -95,9 +121,9 @@ void print_symbol_table(void) {
 
 %define parse.error verbose
 %start prog_start
-%token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN
+%token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN BREAK
 %token <op_val> IDENTIFIER NUMBER
-%type <code_node> functions function arguments argument declaration statement statements statement_p s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
+%type <code_node> functions function arguments argument declaration statement statement_p statements s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
 
 %%
 
@@ -155,10 +181,10 @@ argument: %empty /* epsilon */ {
         $$ = node; 
     }
     | INTEGER IDENTIFIER {
-        // CodeNode *code_node1 = new CodeNode;
-        // std::string id = $2;
-        // code_node1->code += std::string(". ") + id + std::string("\n");
-        // $$ = code_node1;
+        CodeNode *code_node1 = new CodeNode;
+        std::string id = $2;
+        code_node1->code += std::string(". ") + id + std::string("\n");
+        $$ = code_node1;
 
         // Type t = Integer;
         // add_variable_to_symbol_table(id , t);
@@ -178,18 +204,16 @@ statements: %empty {
         $$ = node;
     }
     | statement_p statements {
-        CodeNode *code_node1 = $1;
-        CodeNode *code_node2 = $2;
         CodeNode *node = new CodeNode;
-        node->code += code_node1->code + code_node2->code;
+        node-> code += $1->code + $2->code;
         $$ = node;
     }
     ;
 
 statement_p : s_if {
-    CodeNode *node = new CodeNode;
-    node = $1;
-    $$=node;
+        CodeNode *node = new CodeNode;
+        node = $1;
+        $$ = node; 
     }
     | s_while {}
     ;
@@ -229,6 +253,15 @@ statement:
         // node->name = $1->name;
         // $$ = node;
     }
+    | BREAK {
+        CodeNode *node = new CodeNode;
+        std::stringstream str_s;
+        str_s << count_loops;
+        std::string num;
+        str_s >> num;
+        node->code = std::string(":= endloop") + num + std::string("\n");
+        $$ = node;
+    }
     | RETURN expression {}
     ;
 
@@ -244,6 +277,8 @@ arr_decl: INTEGER IDENTIFIER L_BRACKET NUMBER R_BRACKET  {
     CodeNode *node = new CodeNode;
     node->code = std::string(".[] ") + id + std::string(", ") + num + std::string("\n");
     node->name = id;
+    Type t = Integer;
+    add_variable_to_symbol_table(id , t);
     $$ = node;
 }
     ;
@@ -271,9 +306,53 @@ s_var: var EQUALS expression {
 }
     ;
 
-s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {}
-    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY {}
-    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY {}
+s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {
+        std::string ifs = create_ifs();
+
+        CodeNode *node = new CodeNode;
+        CodeNode *neg = $3;
+        CodeNode *expression_bool = $4;
+        CodeNode *statements = $7;
+
+        node->code += neg->code + expression_bool->code;
+        node->code += std::string("?:= if_true") + ifs + std::string(", ") + expression_bool->name + std::string("\n");
+        node->code += std::string(":= endif") + ifs + std::string("\n"); 
+
+        node->code += std::string(": if_true") + ifs + std::string("\n");
+        node->code += statements->code;
+
+        node->code += std::string(": endif") + ifs + std::string("\n");
+        
+        $$ = node;
+    }
+    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY {
+        
+    }
+    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY {
+        std::string ifs = create_ifs();
+
+        CodeNode *node = new CodeNode;
+        CodeNode *neg = $3;
+        CodeNode *expression_bool = $4;
+        CodeNode *statements_if = $7;
+        CodeNode *statements_else = $11;
+
+        node->code += neg->code + expression_bool->code;
+        node->code += std::string("?:= if_true") + ifs + std::string(", ") + expression_bool->name + std::string("\n");
+
+        node->code += std::string(":= else") + ifs + std::string("\n");
+
+        node->code += std::string(": if_true") + ifs + std::string("\n");
+        node->code += statements_if->code;  
+        node->code += std::string(":= endif") + ifs + std::string("\n");
+
+        node->code += std::string(": else") + ifs + std::string("\n");
+        node->code += statements_else->code;
+
+        node->code += std::string(": endif") + ifs + std::string("\n");
+        
+        $$ = node;
+    }
     ;
 
 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {
@@ -536,22 +615,26 @@ var: IDENTIFIER {
     CodeNode *node = new CodeNode;
     node->code = "";
     node->name = $1;
+    std::string error = "The variable " + node->name + " has not been declared\n";
+    if (!find(node->name)) {
+        yyerror(error.c_str());
+    }
     $$ = node;
 }
     ;
 
 neg: 
-        NOT {
-            CodeNode* node = new CodeNode;
-            node->name = std::string("! ");
-            node->code += "";
-            $$ = node;
-        }
-        | %empty /* epsilon */ {
-            CodeNode *node = new CodeNode;
-            $$ = node;
-        }
-		;
+    NOT {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("! ");
+        node->code += "";
+        $$ = node;
+    }
+    | %empty /* epsilon */ {
+        CodeNode *node = new CodeNode;
+        $$ = node;
+    }
+    ;
 
 declaration: INTEGER IDENTIFIER  {
         CodeNode *node = new CodeNode;
@@ -559,8 +642,8 @@ declaration: INTEGER IDENTIFIER  {
         node->code += std::string(". ") + id + std::string("\n");
         $$ = node;
 
-        //Type t = Integer;
-        // add_variable_to_symbol_table(id , t);
+        Type t = Integer;
+        add_variable_to_symbol_table(id , t);
     }
     ;
 
@@ -568,8 +651,8 @@ declaration: INTEGER IDENTIFIER  {
 
 int main(int argc, char **argv)
 {
-    yyparse();
-   print_symbol_table();
+   yyparse();
+//    print_symbol_table();
    return 0;
 }
 

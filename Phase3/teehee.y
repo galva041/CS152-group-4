@@ -11,10 +11,20 @@
     void yyerror(const char *msg);
     extern int lineCount;
 
+    int position = 0;
+
     char *identToken;
     int numberToken;
     int  count_names = 0;
     int count_temp = 0;
+    int count_params = 0;
+
+std::string output_params(){
+    std::stringstream params; 
+    params << count_params;
+    count_params += 1;
+    return params.str();
+}
 
 std::string create_temp() {
     std::stringstream temp; 
@@ -27,14 +37,16 @@ enum Type { Integer, Array };
 struct Symbol {
   std::string name;
   Type type;
+  int symCount;
 };
 struct Function {
   std::string name;
-  std::vector<Symbol> declarations;
+//   std::vector<Symbol> declarations;
+  int funcCount;
 };
 
 std::vector <Function> symbol_table;
-
+std::vector <Symbol> declarations;
 
 Function *get_function() {
   int last = symbol_table.size()-1;
@@ -42,10 +54,12 @@ Function *get_function() {
 }
 
 bool find(std::string &value) {
-  Function *f = get_function();
-  for(int i=0; i < f->declarations.size(); i++) {
-    Symbol *s = &f->declarations[i];
-    if (s->name == value) {
+//   Function *f = get_function();
+//   for(int i=0; i < f->declarations.size(); i++) {
+  for(int i=0; i < declarations.size(); i++) {
+    // Symbol *s = declarations[i];
+    Symbol s = declarations[i];
+    if (s.name == value) {
       return true;
     }
   }
@@ -55,6 +69,8 @@ bool find(std::string &value) {
 void add_function_to_symbol_table(std::string &value) {
   Function f; 
   f.name = value; 
+  f.funcCount = position;
+  position++;
   symbol_table.push_back(f);
 }
 
@@ -62,8 +78,10 @@ void add_variable_to_symbol_table(std::string &value, Type t) {
   Symbol s;
   s.name = value;
   s.type = t;
-  Function *f = get_function();
-  f->declarations.push_back(s);
+  s.symCount = position;
+//   Function *f = get_function();
+//   f->declarations.push_back(s);
+  declarations.push_back(s);
 }
 
 void print_symbol_table(void) {
@@ -71,12 +89,14 @@ void print_symbol_table(void) {
   printf("--------------------\n");
   for(int i=0; i<symbol_table.size(); i++) {
     printf("function: %s\n", symbol_table[i].name.c_str());
-    for(int j=0; j<symbol_table[i].declarations.size(); j++) {
-      printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
+    for(int j=0; j<declarations.size(); j++) {
+        if (symbol_table[i].funcCount == declarations[j].symCount) 
+          printf("  locals: %s\n", declarations[j].name.c_str());
     }
   }
   printf("--------------------\n");
 }
+
 %}
 
 %union {
@@ -87,7 +107,7 @@ void print_symbol_table(void) {
 
 %define parse.error verbose
 %start prog_start
-%token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN
+%token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN BREAK
 %token <op_val> IDENTIFIER NUMBER
 %type <code_node> functions function arguments argument declaration statement statements s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
 
@@ -125,32 +145,83 @@ function: FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CUR
 
     // params arguments
     CodeNode *arguments = $4;
+    count_params = 0;
     node->code += arguments->code;
+    std::string n = arguments->name;
+    // printf("%s ", n.c_str());
+    //node->code += std::string("= ") + arguments->name + std::string(", $0\n");
+
 
     // statements
     CodeNode *statements = $7;
     node->code += statements->code;
 
-    node->code += std::string("endfunc\n");
+    node->code += std::string("endfunc\n\n");
     $$ = node;
 
     add_function_to_symbol_table(func_name);
 }
     ;
 
-arguments: argument {}
-    | argument COMMA arguments {}
-    ;
-
-argument: %empty /* epsilon */ {
+arguments: 
+    %empty /* epsilon */ {
         CodeNode *node = new CodeNode;
         $$ = node; 
     }
-    | INTEGER IDENTIFIER {
-        // CodeNode *code_node1 = new CodeNode;
-        // std::string id = $2;
-        // code_node1->code += std::string(". ") + id + std::string("\n");
-        // $$ = code_node1;
+    | argument {
+        CodeNode *node = new CodeNode;
+        
+        node->code = $1->code;
+        node->name = $1->name;
+
+        $$ = node;
+    }
+    | argument COMMA arguments 
+    {
+        CodeNode *node = new CodeNode;
+        node->code = $1->code;
+        node->name = $1->name;
+
+        //std::string dest1 = std::string("= ") + $1->name + std::string(", $0\n");
+
+        node->code += $3->code;
+        node->name += $3->name;
+
+        //std::string dest2 = std::string("= ") + $3->name + std::string(", $1\n");
+
+        //node->code += dest1 + dest2;
+
+        $$ = node;
+    }
+    ;
+
+argument: 
+   
+    INTEGER IDENTIFIER {
+        CodeNode *node = new CodeNode;
+        std::string id = $2;
+        node->code += std::string(". ") + id + std::string("\n");
+        node->code += std::string("= ") + id + std::string(", $") + output_params() + std::string("\n");
+        node->name = id;
+        $$ = node;
+
+        Type t = Integer;
+        add_variable_to_symbol_table(id , t);
+    }
+    | expression {
+        CodeNode *node = new CodeNode;
+        node->code = std::string(". ") + $1->name + std::string("\n");
+        node->code += std::string("param ") + $1->name + std::string("\n");
+        node->code += $1->code;
+        node->name = $1->name;
+        $$ = node;
+    }
+    | IDENTIFIER {
+        CodeNode *node = new CodeNode;
+        std::string id = $1;
+        node->code += std::string("param ") + id + std::string("\n");
+        node->name = id;
+        $$ = node;
 
         // Type t = Integer;
         // add_variable_to_symbol_table(id , t);
@@ -217,7 +288,14 @@ statement:
         // node->name = $1->name;
         // $$ = node;
     }
-    | RETURN expression {}
+    | RETURN expression {
+        CodeNode *node = new CodeNode;
+        CodeNode *expression = $2;
+        node->code = "";
+        node->name = expression->name;
+        node->code += expression->code + std::string("ret ") + expression->name + std::string ("\n");
+        $$ = node;
+    }
     ;
 
 arr_decl: INTEGER IDENTIFIER L_BRACKET NUMBER R_BRACKET  {
@@ -233,6 +311,9 @@ arr_decl: INTEGER IDENTIFIER L_BRACKET NUMBER R_BRACKET  {
     node->code = std::string(".[] ") + id + std::string(", ") + num + std::string("\n");
     node->name = id;
     $$ = node;
+
+    Type t = Integer;
+    add_variable_to_symbol_table(id , t);
 }
     ;
 
@@ -345,12 +426,21 @@ mulop: MULT {
     }
     ;
 
-factor: func L_PAREN expression R_PAREN {
-    CodeNode *node = new CodeNode;
-    node->name = $3->name;
-    node->code += $1->code + $3->code;
-    $$ = node;
-}
+    factor: func L_PAREN arguments R_PAREN {
+        CodeNode *node = new CodeNode;
+        CodeNode *arguments = $3;
+        std::string tmp = create_temp();
+        std::string func = $1->name;
+        //node->name = $3->name;
+        //node->code += $1->code + $3->code;
+        //node->code += std::string("pissnshit") + $1->code;
+        node->name = tmp;
+        node->code =  arguments->code;
+        node->code += std::string(". ") + tmp + std::string("\n");
+        node->code += std::string("call ") + func + std::string(", ")+ tmp + std::string("\n");
+
+        $$ = node;
+    }
     | NUMBER {
         CodeNode *node = new CodeNode;
         //node->code = "";
@@ -435,6 +525,10 @@ var: IDENTIFIER {
     CodeNode *node = new CodeNode;
     node->code = "";
     node->name = $1;
+    std::string error = "The variable " + node->name + " has not been declared\n";
+    if (!find(node->name)) {
+        yyerror(error.c_str());
+    }
     $$ = node;
 }
     // | IDENTIFIER L_BRACKET NUMBER R_BRACKET {
@@ -464,8 +558,8 @@ declaration: INTEGER IDENTIFIER  {
         node->code += std::string(". ") + id + std::string("\n");
         $$ = node;
 
-        //Type t = Integer;
-        // add_variable_to_symbol_table(id , t);
+        Type t = Integer;
+        add_variable_to_symbol_table(id , t);
     }
     // | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET 
     // {
@@ -487,7 +581,7 @@ declaration: INTEGER IDENTIFIER  {
 int main(int argc, char **argv)
 {
     yyparse();
-   print_symbol_table();
+//    print_symbol_table();
    return 0;
 }
 
