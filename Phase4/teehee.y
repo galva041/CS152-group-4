@@ -16,6 +16,8 @@
     int  count_names = 0;
     int count_temp = 0;
     int count_loops = 0;
+    int count_ifs = 0;
+    int count_elses = 0;
 
 std::string create_temp() {
     std::stringstream temp; 
@@ -29,6 +31,20 @@ std::string create_loop(){
     loop << count_loops;
     count_loops += 1;
     return loop.str();
+}
+
+std::string create_ifs(){
+    std::stringstream ifs;
+    ifs << count_ifs;
+    count_ifs += 1;
+    return ifs.str();
+}
+
+std::string create_else(){
+    std::stringstream elses;
+    elses << count_elses;
+    count_elses += 1;
+    return elses.str();
 }
 
 enum Type { Integer, Array };
@@ -97,7 +113,7 @@ void print_symbol_table(void) {
 %start prog_start
 %token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN
 %token <op_val> IDENTIFIER NUMBER
-%type <code_node> functions function arguments argument declaration statement statements statement_p s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
+%type <code_node> functions function arguments argument declaration statement statement_p statements s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
 
 %%
 
@@ -155,10 +171,10 @@ argument: %empty /* epsilon */ {
         $$ = node; 
     }
     | INTEGER IDENTIFIER {
-        // CodeNode *code_node1 = new CodeNode;
-        // std::string id = $2;
-        // code_node1->code += std::string(". ") + id + std::string("\n");
-        // $$ = code_node1;
+        CodeNode *code_node1 = new CodeNode;
+        std::string id = $2;
+        code_node1->code += std::string(". ") + id + std::string("\n");
+        $$ = code_node1;
 
         // Type t = Integer;
         // add_variable_to_symbol_table(id , t);
@@ -178,18 +194,16 @@ statements: %empty {
         $$ = node;
     }
     | statement_p statements {
-        CodeNode *code_node1 = $1;
-        CodeNode *code_node2 = $2;
         CodeNode *node = new CodeNode;
-        node->code += code_node1->code + code_node2->code;
+        node-> code += $1->code + $2->code;
         $$ = node;
     }
     ;
 
 statement_p : s_if {
-    CodeNode *node = new CodeNode;
-    node = $1;
-    $$=node;
+        CodeNode *node = new CodeNode;
+        node = $1;
+        $$ = node; 
     }
     | s_while {}
     ;
@@ -271,9 +285,53 @@ s_var: var EQUALS expression {
 }
     ;
 
-s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {}
-    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY {}
-    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY {}
+s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {
+        std::string ifs = create_ifs();
+
+        CodeNode *node = new CodeNode;
+        CodeNode *neg = $3;
+        CodeNode *expression_bool = $4;
+        CodeNode *statements = $7;
+
+        node->code += neg->code + expression_bool->code;
+        node->code += std::string("?:= if_true") + ifs + std::string(", ") + expression_bool->name + std::string("\n");
+        node->code += std::string(":= endif") + ifs + std::string("\n"); 
+
+        node->code += std::string(": if_true") + ifs + std::string("\n");
+        node->code += statements->code;
+
+        node->code += std::string(": endif") + ifs + std::string("\n");
+        
+        $$ = node;
+    }
+    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY IFELSE neg L_CURLY statements R_CURLY {
+        
+    }
+    | IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY ELSE L_CURLY statements R_CURLY {
+        std::string ifs = create_ifs();
+
+        CodeNode *node = new CodeNode;
+        CodeNode *neg = $3;
+        CodeNode *expression_bool = $4;
+        CodeNode *statements_if = $7;
+        CodeNode *statements_else = $11;
+
+        node->code += neg->code + expression_bool->code;
+        node->code += std::string("?:= if_true") + ifs + std::string(", ") + expression_bool->name + std::string("\n");
+
+        node->code += std::string(":= else") + ifs + std::string("\n");
+
+        node->code += std::string(": if_true") + ifs + std::string("\n");
+        node->code += statements_if->code;  
+        node->code += std::string(":= endif") + ifs + std::string("\n");
+
+        node->code += std::string(": else") + ifs + std::string("\n");
+        node->code += statements_else->code;
+
+        node->code += std::string(": endif") + ifs + std::string("\n");
+        
+        $$ = node;
+    }
     ;
 
 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {
@@ -541,17 +599,17 @@ var: IDENTIFIER {
     ;
 
 neg: 
-        NOT {
-            CodeNode* node = new CodeNode;
-            node->name = std::string("! ");
-            node->code += "";
-            $$ = node;
-        }
-        | %empty /* epsilon */ {
-            CodeNode *node = new CodeNode;
-            $$ = node;
-        }
-		;
+    NOT {
+        CodeNode* node = new CodeNode;
+        node->name = std::string("! ");
+        node->code += "";
+        $$ = node;
+    }
+    | %empty /* epsilon */ {
+        CodeNode *node = new CodeNode;
+        $$ = node;
+    }
+    ;
 
 declaration: INTEGER IDENTIFIER  {
         CodeNode *node = new CodeNode;
