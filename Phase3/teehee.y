@@ -205,8 +205,8 @@ argument:
         node->name = id;
         $$ = node;
 
-        //Type t = Integer;
-        //add_variable_to_symbol_table(id , t);
+        Type t = Integer;
+        add_variable_to_symbol_table(id , t);
     }
     | expression {
         CodeNode *node = new CodeNode;
@@ -581,7 +581,7 @@ declaration: INTEGER IDENTIFIER  {
 int main(int argc, char **argv)
 {
     yyparse();
-   print_symbol_table();
+//    print_symbol_table();
    return 0;
 }
 
