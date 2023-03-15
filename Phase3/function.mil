@@ -1,0 +1,51 @@
+func add
+. a
+= a, $0
+. b
+= b, $1
+. _temp0
++ _temp0, a, b
+ret _temp0
+endfunc
+
+func mult
+. a
+= a, $0
+. b
+= b, $1
+. _temp1
+* _temp1, a, b
+ret _temp1
+endfunc
+
+func main
+. a
+. b
+. c
+. d
+= a, 100
+= b, 50
+param a
+param b
+. _temp2
+call add, _temp2
+= c, _temp2
+.> c
+param c
+. _temp3
+param _temp3
+. _temp3
++ _temp3, a, b
+. _temp4
+call mult, _temp4
+= d, _temp4
+.> d
+endfunc
+
+
+symbol table:
+--------------------
+function: add
+function: mult
+function: main
+--------------------

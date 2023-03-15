@@ -1,0 +1,23 @@
+queen add(int a, int b){
+    slay a + b;
+}
+
+queen mult(int a, int b){
+    slay a * b;
+}
+
+queen main() {
+    int a;
+    int b;
+    int c;
+    int d;
+
+    a isgiving 100;
+    b isgiving 50;
+    c isgiving add(a,b);
+    slout(c);
+
+    d isgiving mult(c, a+b);
+    slout(d);
+}
+
