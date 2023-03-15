@@ -1,0 +1,8 @@
+queen main() {
+    int i;
+    i isgiving 0;
+    woil(i less 10){
+        i isgiving i + 1;
+        slout(i);
+    }
+}
