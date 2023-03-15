@@ -1,0 +1,18 @@
+:sob: This is an if-else statement
+
+queen main() {
+    int a;
+    int b;
+    int c;
+
+    a isgiving 100;
+    b isgiving 50;
+
+    yaur?(a less b) {
+        c isgiving b;
+    } naur {
+        c isgiving a;
+    }
+
+    slout(c);  :sob: This should print out 100
+}
