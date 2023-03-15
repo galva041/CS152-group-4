@@ -1,0 +1,11 @@
+queen main() {
+ int i;
+ i isgiving 0;
+ woil (i isgivingsmall 10) {
+    slout(i);
+    if (i bigger 2) {
+        broke;
+    }
+    i = i + 1;
+ }
+}

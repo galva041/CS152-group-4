@@ -11,6 +11,8 @@
     void yyerror(const char *msg);
     extern int lineCount;
 
+    int position = 0;
+
     char *identToken;
     int numberToken;
     int  count_names = 0;
@@ -35,14 +37,16 @@ enum Type { Integer, Array };
 struct Symbol {
   std::string name;
   Type type;
+  int symCount;
 };
 struct Function {
   std::string name;
-  std::vector<Symbol> declarations;
+//   std::vector<Symbol> declarations;
+  int funcCount;
 };
 
 std::vector <Function> symbol_table;
-
+std::vector <Symbol> declarations;
 
 Function *get_function() {
   int last = symbol_table.size()-1;
@@ -50,10 +54,12 @@ Function *get_function() {
 }
 
 bool find(std::string &value) {
-  Function *f = get_function();
-  for(int i=0; i < f->declarations.size(); i++) {
-    Symbol *s = &f->declarations[i];
-    if (s->name == value) {
+//   Function *f = get_function();
+//   for(int i=0; i < f->declarations.size(); i++) {
+  for(int i=0; i < declarations.size(); i++) {
+    // Symbol *s = declarations[i];
+    Symbol s = declarations[i];
+    if (s.name == value) {
       return true;
     }
   }
@@ -63,6 +69,8 @@ bool find(std::string &value) {
 void add_function_to_symbol_table(std::string &value) {
   Function f; 
   f.name = value; 
+  f.funcCount = position;
+  position++;
   symbol_table.push_back(f);
 }
 
@@ -70,8 +78,10 @@ void add_variable_to_symbol_table(std::string &value, Type t) {
   Symbol s;
   s.name = value;
   s.type = t;
-  Function *f = get_function();
-  f->declarations.push_back(s);
+  s.symCount = position;
+//   Function *f = get_function();
+//   f->declarations.push_back(s);
+  declarations.push_back(s);
 }
 
 void print_symbol_table(void) {
@@ -79,12 +89,14 @@ void print_symbol_table(void) {
   printf("--------------------\n");
   for(int i=0; i<symbol_table.size(); i++) {
     printf("function: %s\n", symbol_table[i].name.c_str());
-    for(int j=0; j<symbol_table[i].declarations.size(); j++) {
-      printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
+    for(int j=0; j<declarations.size(); j++) {
+        if (symbol_table[i].funcCount == declarations[j].symCount) 
+          printf("  locals: %s\n", declarations[j].name.c_str());
     }
   }
   printf("--------------------\n");
 }
+
 %}
 
 %union {
@@ -95,7 +107,7 @@ void print_symbol_table(void) {
 
 %define parse.error verbose
 %start prog_start
-%token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN
+%token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN BREAK
 %token <op_val> IDENTIFIER NUMBER
 %type <code_node> functions function arguments argument declaration statement statements s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
 
@@ -513,9 +525,11 @@ var: IDENTIFIER {
     CodeNode *node = new CodeNode;
     node->code = "";
     node->name = $1;
+    std::string error = "The variable " + node->name + " has not been declared\n";
+    if (!find(node->name)) {
+        yyerror(error.c_str());
+    }
     $$ = node;
-    Type t = Integer;
-    add_variable_to_symbol_table(node->name, t);
 }
     // | IDENTIFIER L_BRACKET NUMBER R_BRACKET {
     //     std::string tmp = create_temp();
@@ -544,8 +558,8 @@ declaration: INTEGER IDENTIFIER  {
         node->code += std::string(". ") + id + std::string("\n");
         $$ = node;
 
-        //Type t = Integer;
-       // add_variable_to_symbol_table(id , t);
+        Type t = Integer;
+        add_variable_to_symbol_table(id , t);
     }
     // | INTEGER IDENTIFIER L_BRACKET expression R_BRACKET 
     // {
