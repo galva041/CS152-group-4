@@ -652,7 +652,7 @@ declaration: INTEGER IDENTIFIER  {
 int main(int argc, char **argv)
 {
    yyparse();
-//    print_symbol_table();
+    print_symbol_table();
    return 0;
 }
 
