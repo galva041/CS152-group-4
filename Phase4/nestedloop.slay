@@ -1,7 +1,6 @@
 queen main() {
     int i;
-    int j;
-
+    int j;    
     i isgiving 0;
 
     woil(i less 2) {

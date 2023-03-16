@@ -31,4 +31,6 @@ endfunc
 symbol table:
 --------------------
 function: main
+  locals: i
+  locals: j
 --------------------
