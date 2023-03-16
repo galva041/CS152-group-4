@@ -81,7 +81,11 @@ void add_variable_to_symbol_table(std::string &value, Type t) {
   s.symCount = position;
 //   Function *f = get_function();
 //   f->declarations.push_back(s);
-  declarations.push_back(s);
+  std::string error = "The variable " + value + " has already been declared.\n";
+  if (!find(value)) declarations.push_back(s);
+  else {
+    yyerror(error.c_str());
+  }
 }
 
 void print_symbol_table(void) {
@@ -109,7 +113,7 @@ void print_symbol_table(void) {
 %start prog_start
 %token PLUS MINUS MULT MOD DIV EQUALS LESSTHAN GREATERTHAN ISEQUAL ISNOTEQUAL GTEQUAL LTEQUAL NOT SEMICOLON L_PAREN R_PAREN L_CURLY R_CURLY L_BRACKET R_BRACKET COMMA DECIMAL READ WRITE IF IFELSE ELSE WHILELOOP INTEGER FUNCTION RETURN BREAK
 %token <op_val> IDENTIFIER NUMBER
-%type <code_node> functions function arguments argument declaration statement statements s_var s_if s_while expression var addop term mulop factor func expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
+%type <code_node> functions function arguments argument declaration statement statements s_var s_if s_while expression var addop term mulop factor expression_bool ne_comp term_bool e_comp factor_bool neg arr_assn arr_access arr_decl
 
 %%
 
@@ -312,8 +316,8 @@ arr_decl: INTEGER IDENTIFIER L_BRACKET NUMBER R_BRACKET  {
     node->name = id;
     $$ = node;
 
-    Type t = Integer;
-    add_variable_to_symbol_table(id , t);
+    Type t = Array;
+    add_variable_to_symbol_table(id, t);
 }
     ;
 
@@ -326,6 +330,17 @@ arr_assn: IDENTIFIER L_BRACKET NUMBER R_BRACKET EQUALS expression {
     //node->code = std::string(". ") + temp + std::string("\n");
     node->code += $6->code;
     node->code += std::string("[]= ") + name + std::string(", ") + num + std::string(", ") + $6->name + std::string("\n");
+
+    std::string error = "The array " + name + " has not been declared\n";
+    std::string error2 = "The array " + name + " has already been declared\n";
+
+
+    if (!find(node->name)) {
+        yyerror(error.c_str());
+    }
+     if (find(node->name)) {
+        yyerror(error2.c_str());
+    }
     $$ = node;
 }
     ;
@@ -426,14 +441,18 @@ mulop: MULT {
     }
     ;
 
-    factor: func L_PAREN arguments R_PAREN {
+    factor: L_PAREN expression R_PAREN {
+        CodeNode *node = new CodeNode;
+        node->code = $2->code;
+        node->name = $2->name;
+        $$ = node;
+    }
+    | IDENTIFIER L_PAREN arguments R_PAREN {
         CodeNode *node = new CodeNode;
         CodeNode *arguments = $3;
         std::string tmp = create_temp();
-        std::string func = $1->name;
-        //node->name = $3->name;
-        //node->code += $1->code + $3->code;
-        //node->code += std::string("pissnshit") + $1->code;
+        std::string func = $1;
+      
         node->name = tmp;
         node->code =  arguments->code;
         node->code += std::string(". ") + tmp + std::string("\n");
@@ -477,21 +496,29 @@ arr_access: IDENTIFIER L_BRACKET NUMBER R_BRACKET {
         node->code = std::string(". ") + tmp + std::string("\n");
         node->code += std::string("=[] ") + tmp + std::string(", ") + id + std::string(", ") + index + std::string("\n");
 
+        std::string error = "The array " + node->name + " has not been declared\n";
+
+        if (!find(node->name)) {
+            yyerror(error.c_str());
+        }
+
         $$ = node;
+
+        
     } 
     ;
 
-func: %empty {
-    CodeNode *node = new CodeNode;
-    $$ = node;
-}
-    | IDENTIFIER {
-        CodeNode *node = new CodeNode;
-        node->code = "";
-        node->name = $1;
-        $$ = node;
-    }
-    ;
+// func: %empty {
+//     CodeNode *node = new CodeNode;
+//     $$ = node;
+// }
+//     | IDENTIFIER {
+//         CodeNode *node = new CodeNode;
+//         node->code = "";
+//         node->name = $1;
+//         $$ = node;
+//     }
+//     ;
 
 expression_bool: expression_bool ne_comp term_bool{}
     | term_bool {}
@@ -581,7 +608,7 @@ declaration: INTEGER IDENTIFIER  {
 int main(int argc, char **argv)
 {
     yyparse();
-//    print_symbol_table();
+    print_symbol_table();
    return 0;
 }
 
