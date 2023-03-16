@@ -8,7 +8,7 @@ queen main() {
     a isgiving 100;
     b isgiving 50;
 
-    yaur?(a less b) {
+    yaur?(a bigger b) {
         c isgiving b;
     } naur {
         c isgiving a;

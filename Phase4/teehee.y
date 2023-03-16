@@ -18,6 +18,7 @@
     int count_loops = 0;
     int count_ifs = 0;
     int count_elses = 0;
+    int loopFlag = 0;
 
 std::string create_temp() {
     std::stringstream temp; 
@@ -95,7 +96,11 @@ void add_variable_to_symbol_table(std::string &value, Type t) {
   s.symCount = position;
 //   Function *f = get_function();
 //   f->declarations.push_back(s);
-  declarations.push_back(s);
+  std::string error = "The variable " + value + " has already been declared.\n";
+  if (!find(value)) declarations.push_back(s);
+  else {
+    yyerror(error.c_str());
+  }
 }
 
 void print_symbol_table(void) {
@@ -259,6 +264,10 @@ statement:
         str_s << count_loops;
         std::string num;
         str_s >> num;
+        std::string error = "Break statement outside of loop.\n";
+        if(loopFlag == 0) {
+            yyerror(error.c_str());
+        }
         node->code = std::string(":= endloop") + num + std::string("\n");
         $$ = node;
     }
@@ -277,7 +286,14 @@ arr_decl: INTEGER IDENTIFIER L_BRACKET NUMBER R_BRACKET  {
     CodeNode *node = new CodeNode;
     node->code = std::string(".[] ") + id + std::string(", ") + num + std::string("\n");
     node->name = id;
-    Type t = Integer;
+
+    std::string error = "The array " + id + " has already been declared\n";
+    if (find(node->name)) {
+        yyerror(error.c_str());
+    }
+
+
+    Type t = Array;
     add_variable_to_symbol_table(id , t);
     $$ = node;
 }
@@ -292,6 +308,13 @@ arr_assn: IDENTIFIER L_BRACKET NUMBER R_BRACKET EQUALS expression {
     //node->code = std::string(". ") + temp + std::string("\n");
     node->code += $6->code;
     node->code += std::string("[]= ") + name + std::string(", ") + num + std::string(", ") + $6->name + std::string("\n");
+
+    std::string error = "The array " + name + " has not been declared\n";
+
+
+    if (!find(node->name)) {
+        yyerror(error.c_str());
+    }
     $$ = node;
 }
     ;
@@ -358,9 +381,9 @@ s_if: IF L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {
 s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURLY {
     std::string loop = create_loop();
     CodeNode *node = new CodeNode;
-
     node->code = std::string(": beginloop") + loop + std::string("\n");
-
+    loopFlag = 1;
+    
     //neg
     node->code += $3->code;
 
@@ -376,7 +399,7 @@ s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURL
 
     node->code += std::string(":= beginloop") + loop + std::string("\n");
     node->code += std::string(": endloop") + loop + std::string("\n");
-
+    loopFlag = 0;
     $$ = node;
 }   
     ;
@@ -501,7 +524,15 @@ arr_access: IDENTIFIER L_BRACKET NUMBER R_BRACKET {
         node->code = std::string(". ") + tmp + std::string("\n");
         node->code += std::string("=[] ") + tmp + std::string(", ") + id + std::string(", ") + index + std::string("\n");
 
+        std::string error = "The array " + node->name + " has not been declared\n";
+
+        if (!find(node->name)) {
+            yyerror(error.c_str());
+        }
+
         $$ = node;
+
+        
     } 
     ;
 

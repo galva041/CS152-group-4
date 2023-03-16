@@ -5,4 +5,5 @@ queen main() {
         i isgiving i + 1;
         slout(i);
     }
+    broke;
 }
