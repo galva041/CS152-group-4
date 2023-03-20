@@ -18,7 +18,8 @@
     int count_loops = 0;
     int count_ifs = 0;
     int count_elses = 0;
-    int loopFlag = 0;
+    // int loopFlag = 0;
+    int breakFlag = 0;
 
 std::string create_temp() {
     std::stringstream temp; 
@@ -174,6 +175,11 @@ function: FUNCTION IDENTIFIER L_PAREN arguments R_PAREN L_CURLY statements R_CUR
     $$ = node;
 
     add_function_to_symbol_table(func_name);
+
+    std::string error = "Break statement outside of loop.\n";
+        if(breakFlag == 1) {
+            yyerror(error.c_str());
+        }
 }
     ;
 
@@ -264,10 +270,11 @@ statement:
         str_s << count_loops;
         std::string num;
         str_s >> num;
-        std::string error = "Break statement outside of loop.\n";
-        if(loopFlag == 0) {
-            yyerror(error.c_str());
-        }
+        breakFlag = 1;
+        // std::string error = "Break statement outside of loop.\n";
+        // if(loopFlag == 0) {
+        //     yyerror(error.c_str());
+        // }
         node->code = std::string(":= endloop") + num + std::string("\n");
         $$ = node;
     }
@@ -382,8 +389,8 @@ s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURL
     std::string loop = create_loop();
     CodeNode *node = new CodeNode;
     node->code = std::string(": beginloop") + loop + std::string("\n");
-    loopFlag = 1;
-    
+    // loopFlag = 1;
+    breakFlag = 0;
     //neg
     node->code += $3->code;
 
@@ -399,7 +406,7 @@ s_while: WHILELOOP L_PAREN neg expression_bool R_PAREN L_CURLY statements R_CURL
 
     node->code += std::string(":= beginloop") + loop + std::string("\n");
     node->code += std::string(": endloop") + loop + std::string("\n");
-    loopFlag = 0;
+    // loopFlag = 0;
     $$ = node;
 }   
     ;
